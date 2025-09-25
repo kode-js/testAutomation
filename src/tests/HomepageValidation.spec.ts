@@ -52,5 +52,4 @@ test.describe('Test case 1', () => {
     await homePage.accountsCanvasCloseButton.click();
     await expect.soft(homePage.accontsOffcanvasTitle).not.toBeVisible();
   });
-
 });

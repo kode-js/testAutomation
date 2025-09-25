@@ -14,6 +14,7 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 90000, 
   testDir: './src/tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -25,7 +26,8 @@ export default defineConfig({
   //workers: process.env.CI ? 1 : undefined,
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter:  [['html', {  outputFile: 'results/'+ timeStamp +'/test-results.html' }]],
+  //reporter:  [['html', {  outputFile: 'results/'+ timeStamp +'/test-results.html' }]],
+  reporter: [["line"], ["allure-playwright"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
