@@ -9,6 +9,7 @@ export class MikomiPage {
     readonly totalAccountBalance: Locator;
     readonly successBanner: Locator;
     readonly nonEligibleAccountsBanner: Locator;
+    readonly loadingSpinner: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -19,7 +20,7 @@ export class MikomiPage {
         this.totalAccountBalance = page.locator("//div[@class='accountsDrawer__summary-value']");
         this.successBanner = page.locator("//div[text()='Your eligible Akoya Mikomo account(s) are successfully connected.' and contains(@class,'alert-success')]");
         this.nonEligibleAccountsBanner = page.locator("//div[text()='You have attempted to connect a non-eligible account(s). Only checking and savings accounts can be connected to the dashboard.' and contains(@class,'alert-warning')]");
-        
+        this.loadingSpinner = page.locator("//div[@aria-label='Loading' and @role='alert']");
     }
     
 }
