@@ -5,6 +5,7 @@ import { MikomiPage } from '../pages/mikomiConnection';
 import { AccountsCanvas } from '../pages/accountsCanvas';
 import { sleep } from '../utils/utils';
 import bankslist from '../testdata/banks.json' assert { type: 'json' };
+import login from '../testdata/login.json' assert { type: 'json' };
 
 test.describe('Test case 1', () => {
 
@@ -15,8 +16,8 @@ test.describe('Test case 1', () => {
     const miPage = new MikomiPage(page);
     const accountsCanvas = new AccountsCanvas(page);
     await loginPage.navigate();
-    await loginPage.login('sep20@mailinator.com', 'First@1234');
-    await expect.soft(page).toHaveTitle('Bank of America | Online Banking | Connected Apps');
+    await loginPage.login(login.boa.username, login.boa.password);
+    await expect.soft(page).toHaveTitle(login.boa.homepageTitle);
     await homePage.accountsHeaderButton.click();
     await accountsCanvas.getBankByName(bankName).click();
     await accountsCanvas.termsAndConditionsCheckbox.check();
@@ -25,7 +26,7 @@ test.describe('Test case 1', () => {
     await page.waitForLoadState('networkidle');
 
     //mikomo login
-    await loginPage.mikomoLogin('mikomo_2023', 'mikomo_2023');
+    await loginPage.mikomoLogin(login.amb.username, login.amb.password);
     await page.waitForLoadState('networkidle');
     //click on terms next button
     await miPage.termsNextButton.click();

@@ -4,6 +4,7 @@ import { HomePage } from '../pages/homepage';
 import { AccountsCanvas } from '../pages/accountsCanvas';
 import { sleep } from '../utils/utils';
 import bankslist from '../testdata/banks.json' assert { type: 'json' };
+import login from '../testdata/login.json' assert { type: 'json' };
 
 test.describe('Test case 3', () => {
   test('Verify Login pages', async ({ page }) => {
@@ -11,8 +12,8 @@ test.describe('Test case 3', () => {
     const homePage = new HomePage(page);
     const accountsCanvas = new AccountsCanvas(page);
     await loginPage.navigate();
-    await loginPage.login('sep20@mailinator.com', 'First@1234');
-    await expect(page).toHaveTitle('Bank of America | Online Banking | Connected Apps');
+    await loginPage.login(login.boa.username, login.boa.password);
+    await expect(page).toHaveTitle(login.boa.homepageTitle);
     await homePage.accountsHeaderButton.click();
     for (const bank of bankslist) {
       await test.step(`Verifying login page for ${bank.bank}`, async () => {
@@ -23,7 +24,6 @@ test.describe('Test case 3', () => {
         await bankButton.click();
         await page.waitForLoadState('networkidle');
         await expect.soft(accountsCanvas.bankHeaderTitle).toHaveText(bank.bank);
-        // click on I agree checkbox
         await accountsCanvas.termsAndConditionsCheckbox.check();
         await page.waitForLoadState('networkidle');
         await accountsCanvas.proceedButton.click();
