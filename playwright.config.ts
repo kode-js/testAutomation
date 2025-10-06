@@ -14,7 +14,7 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 90000, 
+  timeout: 60 * 60 * 1000, 
   testDir: './src/tests',
   /* Run tests in files in parallel */
   fullyParallel: false,

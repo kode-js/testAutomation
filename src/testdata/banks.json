@@ -1,12 +1,42 @@
 [
-    {"bank": "Akoya Mikomo bank"},
-    {"bank": "Capital One"},
-    {"bank": "Citibank"},
-    {"bank": "Citizens"},
-    {"bank": "JPMorgan Chase"},
-    {"bank": "KeyBank"},
-    {"bank": "PNC Bank"},
-    {"bank": "TD Bank"},
-    {"bank": "U.S. Bank"},
-    {"bank": "Wells Fargo"}
+    {
+        "bank": "Akoya Mikomo bank",
+        "loginPageTitle": "Mock Financial Institution"
+    },
+    {
+        "bank": "Capital One",
+        "loginPageTitle": "Capital One - Sign In"
+    },
+    {
+        "bank": "Citibank",
+        "loginPageTitle": "oAuth Sign On - Citibank"
+    },
+    {
+        "bank": "Citizens",
+        "loginPageTitle": "Login to connect to Citizens"
+    },
+    {
+        "bank": "JPMorgan Chase",
+        "loginPageTitle": "Sign in - chase.com"
+    },
+    {
+        "bank": "KeyBank",
+        "loginPageTitle": "Keybank - Aggregator"
+    },
+    {
+        "bank": "PNC Bank",
+        "loginPageTitle": "Sign On | PNC"
+    },
+    {
+        "bank": "TD Bank",
+        "loginPageTitle": "Online Banking, Loans, Credit Cards & Home Lending | TD Bank"
+    },
+    {
+        "bank": "U.S. Bank",
+        "loginPageTitle": "Standalone OAuth Login"
+    },
+    {
+        "bank": "Wells Fargo",
+        "loginPageTitle": "Sign On to View Your Personal Accounts | Wells Fargo"
+    }
 ]

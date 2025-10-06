@@ -13,6 +13,7 @@ export class AccountsCanvas {
     readonly canvasCancelButton: Locator;
     readonly termsAndConditionsCheckbox: Locator;
     readonly proceedButton: Locator;
+    readonly confirmRemoveButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -27,10 +28,15 @@ export class AccountsCanvas {
         this.canvasCancelButton = page.locator("xpath=//div[@class='offcanvas-body']//span[text()='Cancel']");
         this.termsAndConditionsCheckbox = page.locator("xpath=//input[@type='checkbox' and @id='tandc']");
         this.proceedButton = page.locator("xpath=//button[.//span[text()='Proceed']]");
+        this.confirmRemoveButton = page.locator("xpath=//div[@class='modal-content']//span[text()='Remove']");
     }
 
     // method which return bank button locator based on bank name
     getBankByName(bankName: string): Locator {
         return this.page.locator(`xpath=//p[text()='Popular banks']/following-sibling::button[div[div[@class='dataConnector__app-name' and text()='${bankName}']]]`);
+    }
+
+    removeButtonByBankName(bankName: string): Locator {
+        return this.page.locator(`//h2[.//*[text()='${bankName}']]/..//span[text()='Remove']`);
     }
 }
