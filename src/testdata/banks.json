@@ -1,7 +1,21 @@
 [
     {
         "bank": "Akoya Mikomo bank",
-        "loginPageTitle": "Mock Financial Institution"
+        "loginPageTitle": "Mock Financial Institution",
+        "accounts": [
+            {
+                "name": "Virtual Wallet Student Reserve"
+            },
+            {
+                "name": "Certificate of Deposit"
+            },
+            {
+                "name": "Nickname Checking Plus"
+            },
+            {
+                "name": "Savings"
+            }
+        ]
     },
     {
         "bank": "Capital One",

@@ -39,4 +39,12 @@ export class AccountsCanvas {
     removeButtonByBankName(bankName: string): Locator {
         return this.page.locator(`//h2[.//*[text()='${bankName}']]/..//span[text()='Remove']`);
     }
+
+    toggleButtonByAccountName(accountName: string): Locator {
+        return this.page.locator(`//div[.//div[text()='${accountName}'] and @class='account']//input[@type='checkbox']`);
+    }
+
+    accountBalanceByAccountName(accountName: string): Locator {
+        return this.page.locator(`//div[.//div[text()='${accountName}'] and @class='account']//div[contains(@class,'account__balance')]`);
+    }
 }

@@ -71,7 +71,7 @@ export default defineConfig({
     // },
      {
        name: 'Google Chrome',
-       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+       use: { ...devices['Desktop Chrome'], channel: 'chrome', headless: false },
      },
     // {
     //   name: 'firefox',
