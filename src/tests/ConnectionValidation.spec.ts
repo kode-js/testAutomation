@@ -65,9 +65,6 @@ test.describe('Test case 1', () => {
     console.log(`Sum of balances: ${sum}, Total balance: ${totalBal}`);
     expect.soft(sum).toBeCloseTo(totalBal, 2);
 
-    // toggle each account and check that balance summary tile is updated accordingly
-      //Accounts list for Akimo from banks.json
-
     
     await accountsCanvas.accountsCanvasCloseButton.click();
     await page.waitForLoadState('networkidle');
@@ -94,17 +91,17 @@ test.describe('Test case 1', () => {
       contentType: 'image/png',
     });
 
-    // Remove connection
-    // await homePage.accountsHeaderButton.click();
-    // await accountsCanvas.removeButtonByBankName(bankName).click();
-    // await page.waitForLoadState('networkidle');
-    // await accountsCanvas.confirmRemoveButton.click();
-    // await page.waitForLoadState('networkidle');
-    // await expect.soft(accountsCanvas.getBankByName(bankName)).toBeVisible();
-    // await test.info().attach(`screenshot- Removed Connection`, {
-    //   body: await page.screenshot(),
-    //   contentType: 'image/png',
-    // });
+    //Remove connection
+    await homePage.accountsHeaderButton.click();
+    await accountsCanvas.removeButtonByBankName(bankName).click();
+    await page.waitForLoadState('networkidle');
+    await accountsCanvas.confirmRemoveButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(accountsCanvas.getBankByName(bankName)).toBeVisible();
+    await test.info().attach(`screenshot- Removed Connection`, {
+      body: await page.screenshot(),
+      contentType: 'image/png',
+    });
   });
 
 });
