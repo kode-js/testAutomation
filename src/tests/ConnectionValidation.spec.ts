@@ -75,6 +75,18 @@ test.describe('Test case 1', () => {
       contentType: 'image/png',
     });
 
+    await expect.soft(homePage.closingCashBalanceTile).toBeVisible();
+    await expect.soft(homePage.cashTrendTile).toBeVisible();
+    await expect.soft(homePage.moneyInTile).toBeVisible();
+    await expect.soft(homePage.moneyOutTile).toBeVisible();
+
+    await expect.soft(homePage.balanceSummaryTile).toBeVisible();
+    await expect.soft(homePage.transactionSummaryTile).toBeVisible();
+    await expect.soft(homePage.availableBalancesTile).toBeVisible();
+    await expect.soft(homePage.topInboundCashSourcesTile).toBeVisible();
+    await expect.soft(homePage.topOutboundCashSourcesTile).toBeVisible();
+
+
     await expect.soft(homePage.closingCashBalanceTile).not.toContainText('Cannot load the data');
     await expect.soft(homePage.cashTrendTile).not.toContainText('Cannot load the data');
     await expect.soft(homePage.moneyInTile).not.toContainText('Cannot load the data');

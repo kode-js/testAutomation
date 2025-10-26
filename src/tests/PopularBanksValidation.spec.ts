@@ -4,11 +4,13 @@ import { HomePage } from '../pages/homepage';
 import { AccountsCanvas } from '../pages/accountsCanvas';
 import bankslist from '../testdata/banks.json' assert { type: 'json' };
 import login from '../testdata/login.json' assert { type: 'json' };
+import { MikomiPage } from '../pages/mikomiConnection';
 
 test('Popular banks validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homePage = new HomePage(page);
   const accountsCanvas = new AccountsCanvas(page);
+  const miPage = new MikomiPage(page);
   await loginPage.navigate();
   await loginPage.login(login.boa.username, login.boa.password);
   await expect(page).toHaveTitle(login.boa.homepageTitle);
@@ -21,6 +23,15 @@ test('Popular banks validation', async ({ page }) => {
   await expect.soft(homePage.accountsHeaderButton).toBeVisible();
 
   await homePage.accountsHeaderButton.click();
+  await expect.soft(miPage.loadingSpinner).toBeHidden({ timeout: 30000 });
+  await page.waitForLoadState('networkidle');
+  if(await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').isVisible()) {
+    await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').click();
+    await page.waitForLoadState('networkidle');
+    await accountsCanvas.confirmRemoveButton.click();
+    await page.waitForLoadState('networkidle');
+  }
+
   await expect.soft(accountsCanvas.accontsOffcanvasTitle).toBeVisible();
   await expect.soft(accountsCanvas.accountsCanvasCloseButton).toBeVisible();
   await expect.soft(accountsCanvas.bankingTab).toBeVisible();
