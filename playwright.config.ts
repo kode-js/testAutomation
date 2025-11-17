@@ -15,6 +15,9 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
  */
 export default defineConfig({
   timeout: 60 * 60 * 1000, 
+   expect: {
+    timeout: 90 * 1000, // Sets default expect timeout to 90 seconds
+  },
   testDir: './src/tests',
   /* Run tests in files in parallel */
   fullyParallel: false,

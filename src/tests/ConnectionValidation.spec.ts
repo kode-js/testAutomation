@@ -19,6 +19,14 @@ test.describe('Test case 1', () => {
     await loginPage.login(login.boa.username, login.boa.password);
     await expect.soft(page).toHaveTitle(login.boa.homepageTitle);
     await homePage.accountsHeaderButton.click();
+
+    if (await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').isVisible()) {
+      await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').click();
+      await page.waitForLoadState('networkidle');
+      await accountsCanvas.confirmRemoveButton.click();
+      await page.waitForLoadState('networkidle');
+    }
+
     await accountsCanvas.getBankByName(bankName).click();
     await accountsCanvas.termsAndConditionsCheckbox.check();
     await page.waitForLoadState('networkidle');
@@ -49,7 +57,7 @@ test.describe('Test case 1', () => {
     await expect.soft(accountsCanvas.accountsCanvasCloseButton).toBeVisible();
     //loading spinner to be visible and then hidden
     await expect.soft(miPage.loadingSpinner).toBeVisible();
-    await expect.soft(miPage.loadingSpinner).toBeHidden({ timeout: 30000 });
+    await expect.soft(miPage.loadingSpinner).toBeHidden({ timeout: 30000 });
 
     //verify total balance is equal to sum of all account balances
     const balances = await miPage.allAccountBalances.allTextContents();
@@ -65,7 +73,7 @@ test.describe('Test case 1', () => {
     console.log(`Sum of balances: ${sum}, Total balance: ${totalBal}`);
     expect.soft(sum).toBeCloseTo(totalBal, 2);
 
-    
+
     await accountsCanvas.accountsCanvasCloseButton.click();
     await page.waitForLoadState('networkidle');
     await expect.soft(miPage.successBanner).toBeVisible();
@@ -100,6 +108,40 @@ test.describe('Test case 1', () => {
 
     await test.info().attach(`screenshot- Tiles`, {
       body: await page.screenshot(),
+      contentType: 'image/png',
+    });
+
+    await homePage.dailyButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(homePage.closingCashBalanceTile).toContainText('Since yesterday');
+    await expect.soft(homePage.cashTrendTile).toContainText('Since yesterday');
+    await expect.soft(homePage.moneyInTile).toContainText('Since yesterday');
+    await expect.soft(homePage.moneyOutTile).toContainText('Since yesterday');
+    //screenshot boardroom quick view section
+    await test.info().attach(`screenshot- Daily View`, {
+      body: await homePage.boardQuickViewSection.screenshot(),
+      contentType: 'image/png',
+    });
+
+    await homePage.weeklyButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(homePage.closingCashBalanceTile).toContainText('From last week');
+    await expect.soft(homePage.cashTrendTile).toContainText('From last week');
+    await expect.soft(homePage.moneyInTile).toContainText('From last week');
+    await expect.soft(homePage.moneyOutTile).toContainText('From last week');
+    await test.info().attach(`screenshot- Weekly View`, {
+      body: await homePage.boardQuickViewSection.screenshot(),
+      contentType: 'image/png',
+    });
+
+    await homePage.monthlyButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(homePage.closingCashBalanceTile).toContainText('From last month');
+    await expect.soft(homePage.cashTrendTile).toContainText('From last month');
+    await expect.soft(homePage.moneyInTile).toContainText('From last month');
+    await expect.soft(homePage.moneyOutTile).toContainText('From last month');
+    await test.info().attach(`screenshot- Monthly View`, {
+      body: await homePage.boardQuickViewSection.screenshot(),
       contentType: 'image/png',
     });
 

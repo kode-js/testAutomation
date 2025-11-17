@@ -29,7 +29,11 @@ test.describe('Test case 3', () => {
         await accountsCanvas.proceedButton.click();
         await page.waitForLoadState('networkidle');
         // verify login page title
-        await expect.soft(page).toHaveTitle(bank.loginPageTitle, { timeout: 10000 });
+        //await expect.soft(page).toHaveTitle(bank.loginPageTitle, { timeout: 10000 });
+        // verify login page username field is visible
+        const usernameLocator = await loginPage.getBankLoginUsername(bank.bank);
+        await expect.soft(usernameLocator).toBeVisible({ timeout: 10000 });
+        await sleep(1000);
         //add screenshot to html report
         await test.info().attach(`screenshot-${bank.bank}`, {
           body: await page.screenshot(),

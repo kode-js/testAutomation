@@ -36,4 +36,45 @@ export class LoginPage {
         await this.mikomoSignInButton.click();
         await this.page.waitForLoadState('networkidle');
     }
+
+    /*
+    Akoya Mikomo bank
+Capital One
+Citibank
+Citizens
+JPMorgan Chase
+KeyBank
+PNC Bank
+TD Bank
+U.S. Bank
+Wells Fargo
+
+    */
+    async getBankLoginUsername(bankName: string){
+        //Switch case to return locator based on bank name
+        switch(bankName) {
+            case 'Akoya Mikomo bank':
+                return this.mikomoUsername;
+            case 'Capital One':
+                return this.page.locator("//input[@id='usernameInputField']");
+            case 'Citibank':
+                return this.page.locator("//input[@id='userid_input_mask']");
+            case 'Citizens':
+                return this.page.locator("//input[@id='form-user-id']");
+            case 'JPMorgan Chase':
+                return this.page.locator("#logonDialog");
+            case 'KeyBank':
+                return this.page.locator("//input[@id='ibx-user-id-input']");
+            case 'PNC Bank':
+                return this.page.locator("//input[@id='signonUserId']");
+            case 'TD Bank':
+                return this.page.locator("//input[@name='psudoUsername']");
+            case 'U.S. Bank':
+                return this.page.locator("//input[@id='input_aw-personal-id']");
+            case 'Wells Fargo':
+                return this.page.locator("//input[@id='j_username']");
+            default:
+                throw new Error(`Bank ${bankName} not found`);
+        }
+    }
 }
