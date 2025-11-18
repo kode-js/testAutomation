@@ -37,19 +37,6 @@ export class LoginPage {
         await this.page.waitForLoadState('networkidle');
     }
 
-    /*
-    Akoya Mikomo bank
-Capital One
-Citibank
-Citizens
-JPMorgan Chase
-KeyBank
-PNC Bank
-TD Bank
-U.S. Bank
-Wells Fargo
-
-    */
     async getBankLoginUsername(bankName: string){
         //Switch case to return locator based on bank name
         switch(bankName) {
