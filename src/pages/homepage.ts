@@ -26,6 +26,19 @@ export class HomePage {
     readonly weeklyButton: Locator;
     readonly monthlyButton: Locator;
 
+    readonly datePickerInput: Locator;
+    readonly datePickerDropdown: Locator;
+    readonly datePickerPreviousMonthButton: Locator;
+    readonly datePickerNextMonthButton: Locator;
+    readonly datePickerDay10Cell: Locator;
+
+    readonly balanceSummaryChart: Locator;
+    readonly closingBalanceLabel: Locator;
+    readonly chartSelectedValue: Locator;
+    readonly chartContainer: Locator;
+
+    readonly topOutboundCashDestinationsCheck: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.homeLogo = page.locator('header #dashboard');
@@ -48,5 +61,16 @@ export class HomePage {
         this.weeklyButton = page.locator("xpath=//button[.//span[text()='Weekly']]");
         this.monthlyButton = page.locator("xpath=//button[.//span[text()='Monthly']]");
         this.boardQuickViewSection = page.locator('div.board__quick-view');
+        this.balanceSummaryChart = page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[@class='chart-wrapper']");
+        this.closingBalanceLabel = page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[contains(@title,'Closing balance as of')]");
+        this.chartSelectedValue = page.locator("xpath=//div[@id='banking-banking-balance-summary']//*[@class='tick-value selected']");
+        this.chartContainer = page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[@id='area-chart-container-0banking']");
+        this.datePickerInput = page.locator("xpath=//input[@id='date']");
+        this.datePickerDropdown = page.locator("xpath=//div[contains(@class,'datePicker__Dropdown')]");
+        this.datePickerPreviousMonthButton = page.locator("xpath=//button[@aria-label='Go to the Previous Month']");
+        this.datePickerNextMonthButton = page.locator("xpath=//button[@aria-label='Go to the Next Month']");
+        this.datePickerDay10Cell = page.locator("xpath=//button[@class='rdp-day_button' and text()='10']");
+        this.topOutboundCashDestinationsCheck = page.locator("xpath=//div[@id='barhorizontal-chart-container-1banking']//*[contains(text(), 'CHECK')]");
+
     }
 }
