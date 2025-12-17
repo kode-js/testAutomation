@@ -3,8 +3,7 @@ import { LoginPage } from '../pages/loginPage';
 import { HomePage } from '../pages/homepage';
 import { MikomiPage } from '../pages/mikomiConnection';
 import { AccountsCanvas } from '../pages/accountsCanvas';
-import { sleep } from '../utils/utils';
-import bankslist from '../testdata/banks.json' assert { type: 'json' };
+import { sleep } from '../../utils/utils';
 import login from '../testdata/login.json' assert { type: 'json' };
 
 test.describe('Test case 1', () => {

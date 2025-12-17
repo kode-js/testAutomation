@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
 import { HomePage } from '../pages/homepage';
 import { AccountsCanvas } from '../pages/accountsCanvas';
-import { sleep } from '../utils/utils';
+import { sleep } from '../../utils/utils';
 import bankslist from '../testdata/banks.json' assert { type: 'json' };
 import login from '../testdata/login.json' assert { type: 'json' };
 

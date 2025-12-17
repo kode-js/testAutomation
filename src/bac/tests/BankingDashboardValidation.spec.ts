@@ -4,7 +4,7 @@ import { HomePage } from '../pages/homepage';
 import { MikomiPage } from '../pages/mikomiConnection';
 import { AccountsCanvas } from '../pages/accountsCanvas';
 import { TopOutboundCashDestCanvas } from '../pages/topOutboundCashDestCanvas';
-import { sleep } from '../utils/utils';
+import { sleep } from '../../utils/utils';
 import login from '../testdata/login.json' assert { type: 'json' };
 
 test.describe('Test case 1', () => {

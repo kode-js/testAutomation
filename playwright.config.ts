@@ -2,6 +2,9 @@ import { defineConfig, devices } from '@playwright/test';
 // Get current timestamp for unique report folder
 const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
 
+const env = process.env.ENV || 'uat';
+const channel = process.env.CHANNEL || 'bac';
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -13,12 +16,13 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
 export default defineConfig({
   timeout: 60 * 60 * 1000, 
    expect: {
     timeout: 90 * 1000, // Sets default expect timeout to 90 seconds
   },
-  testDir: './src/tests',
+  testDir: `./src/${channel}/tests`,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -34,7 +38,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+     baseURL: `https://${channel}-${env}.9spokes.io`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

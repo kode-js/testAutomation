@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+const baseURL = process.env.BASE_URL;
 
 export class LoginPage {
     readonly page: Page;
@@ -20,7 +21,7 @@ export class LoginPage {
     }
     
     async navigate() {
-        await this.page.goto('https://bac-uat.9spokes.io/dex/signin');
+        await this.page.goto('/dex/signin');
     }
 
     async login(username: string, password: string) {
