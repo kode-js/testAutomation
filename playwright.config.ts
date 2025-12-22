@@ -5,6 +5,14 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
 const env = process.env.ENV || 'uat';
 const channel = process.env.CHANNEL || 'bac';
 
+//get current display resolution
+ const { execSync } = require('child_process');
+ const resolution = execSync('system_profiler SPDisplaysDataType | grep Resolution').toString().trim();
+ console.log('Current Display Resolution:', resolution);
+const resWidth = parseInt(resolution.split(' ')[1]);
+const resHeight = parseInt(resolution.split(' ')[3]);
+console.log(`Width: ${resWidth}, Height: ${resHeight}`);
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -18,8 +26,8 @@ const channel = process.env.CHANNEL || 'bac';
  */
 
 export default defineConfig({
-  timeout: 60 * 60 * 1000, 
-   expect: {
+  timeout: 60 * 60 * 1000,
+  expect: {
     timeout: 90 * 1000, // Sets default expect timeout to 90 seconds
   },
   testDir: `./src/${channel}/tests`,
@@ -38,29 +46,30 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-     baseURL: `https://${channel}-${env}.9spokes.io`,
-
+    // if channel is 'bac' then baseURL = 'https://bac-uat.9spokes.io/', 'spynz' then baseURL = 'https://spynz.app-uat.9spokes.dev/'
+    baseURL: 'https://spynz.app-uat.9spokes.dev/',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+   
   },
 
   /* Configure projects for major browsers */
   projects: [
-   /* {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-*/
+    /* {
+       name: 'chromium',
+       use: { ...devices['Desktop Chrome'] },
+     },
+ 
+     {
+       name: 'firefox',
+       use: { ...devices['Desktop Firefox'] },
+     },
+ 
+     {
+       name: 'webkit',
+       use: { ...devices['Desktop Safari'] },
+     },
+ */
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
@@ -76,10 +85,13 @@ export default defineConfig({
     //   name: 'Microsoft Edge',
     //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
     // },
-     {
-       name: 'Google Chrome',
-       use: { ...devices['Desktop Chrome'], channel: 'chrome', headless: false },
-     },
+    {
+      name: 'Google Chrome',
+      use: {
+        ...devices['Desktop Chrome'], channel: 'chrome', headless: false, viewport: { width: resWidth, height: resHeight },
+        
+      },
+    },
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
