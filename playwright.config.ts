@@ -6,9 +6,9 @@ const env = process.env.ENV || 'uat';
 const channel = process.env.CHANNEL || 'bac';
 
 //get current display resolution
- const { execSync } = require('child_process');
- const resolution = execSync('system_profiler SPDisplaysDataType | grep Resolution').toString().trim();
- console.log('Current Display Resolution:', resolution);
+const { execSync } = require('child_process');
+const resolution = execSync('system_profiler SPDisplaysDataType | grep Resolution').toString().trim();
+console.log('Current Display Resolution:', resolution);
 const resWidth = parseInt(resolution.split(' ')[1]);
 const resHeight = parseInt(resolution.split(' ')[3]);
 console.log(`Width: ${resWidth}, Height: ${resHeight}`);
@@ -50,7 +50,7 @@ export default defineConfig({
     baseURL: 'https://spynz.app-uat.9spokes.dev/',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-   
+
   },
 
   /* Configure projects for major browsers */
@@ -89,7 +89,7 @@ export default defineConfig({
       name: 'Google Chrome',
       use: {
         ...devices['Desktop Chrome'], channel: 'chrome', headless: false, viewport: { width: resWidth, height: resHeight },
-        
+
       },
     },
     // {

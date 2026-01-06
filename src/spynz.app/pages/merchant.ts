@@ -1,11 +1,10 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-export class HomePage {
+export class MerchantPage {
     readonly page: Page;
+    //Transactions Tab Locators
     readonly tabTransactions: Locator;
-    readonly tabSettlements: Locator;
     readonly labelTransactions: Locator;
-    readonly labelSettlements: Locator;
     readonly btnAccountsDrawer: Locator;
     readonly quickViewTile_RunningTotal: Locator;
     readonly quickViewTile_NoOfTransactions: Locator;
@@ -21,7 +20,18 @@ export class HomePage {
     readonly columnHeader_chartTile_Transactions_CardType: Locator;
     readonly columnHeader_chartTile_Transactions_PaymentStatus: Locator;
     readonly columnHeader_chartTile_Transactions_Details: Locator;
-
+    
+    //Settlements Tab Locators
+    readonly tabSettlements: Locator;
+    readonly labelSettlements: Locator;
+    readonly chartTile_Settlements: Locator;
+    readonly button_chartTile_Settlements_Filters: Locator;
+    readonly button_chartTile_Settlements_ExportToCSV: Locator;
+    readonly columnHeader_chartTile_Settlements_Date: Locator; 
+    readonly columnHeader_chartTile_Settlements_SettlementAmount: Locator;
+    readonly columnHeader_chartTile_Settlements_NoOfTransactions: Locator
+    readonly columnHeader_chartTile_Settlements_DepositNo: Locator;
+    readonly columnHeader_chartTile_Settlements_Details: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -44,5 +54,14 @@ export class HomePage {
         this.columnHeader_chartTile_Transactions_CardType = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Card Type']");
         this.columnHeader_chartTile_Transactions_PaymentStatus = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Payment Status']");
         this.columnHeader_chartTile_Transactions_Details = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Details']");
+
+        this.chartTile_Settlements = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]");    
+        this.button_chartTile_Settlements_Filters = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Filters']]");
+        this.button_chartTile_Settlements_ExportToCSV = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Export to CSV']]");
+        this.columnHeader_chartTile_Settlements_Date = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Date']");
+        this.columnHeader_chartTile_Settlements_SettlementAmount = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Settlement Amount']");
+        this.columnHeader_chartTile_Settlements_NoOfTransactions = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='No. Transactions']");
+        this.columnHeader_chartTile_Settlements_DepositNo = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Deposit no.']");
+        this.columnHeader_chartTile_Settlements_Details = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Details']");
     }
 }
