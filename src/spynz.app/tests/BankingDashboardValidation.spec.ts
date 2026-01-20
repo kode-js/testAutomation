@@ -44,9 +44,6 @@ test.describe('Test case 1', () => {
     await expect.soft(merchantPage.columnHeader_chartTile_Settlements_DepositNo).toBeVisible();
     await expect.soft(merchantPage.columnHeader_chartTile_Settlements_Details).toBeVisible();
 
-    
-
-    //Actions
     let firstDepositeNumber = await merchantPage.settlementsTable_FirstDepositNo.innerText();
     //console.log("First Deposite Number: " + firstDepositeNumber);
     await merchantPage.button_chartTile_Settlements_Filters.click();
