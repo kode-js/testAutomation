@@ -28,7 +28,7 @@ console.log(`Width: ${resWidth}, Height: ${resHeight}`);
 export default defineConfig({
   timeout: 60 * 60 * 1000,
   expect: {
-    timeout: 90 * 1000, // Sets default expect timeout to 90 seconds
+    timeout: 20 * 1000, // Sets default expect timeout to 90 seconds
   },
   testDir: `./src/${channel}/tests`,
   /* Run tests in files in parallel */

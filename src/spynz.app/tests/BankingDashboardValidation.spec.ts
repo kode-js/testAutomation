@@ -2,13 +2,8 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
 import { MerchantPage } from '../pages/merchant';
 import { HomePage } from '../pages/homepage';
-// import { MikomiPage } from '../pages/mikomiConnection';
-// import { AccountsCanvas } from '../pages/accountsCanvas';
-// import { TopOutboundCashDestCanvas } from '../pages/topOutboundCashDestCanvas';
 import { sleep } from '../../utils/utils';
 import login from '../testdata/login.json' assert { type: 'json' };
-
-
 
 test.describe('Test case 1', () => {
 
@@ -37,9 +32,59 @@ test.describe('Test case 1', () => {
     await expect.soft(merchantPage.columnHeader_chartTile_Transactions_CardType).toBeVisible();
     await expect.soft(merchantPage.columnHeader_chartTile_Transactions_PaymentStatus).toBeVisible();
     await expect.soft(merchantPage.columnHeader_chartTile_Transactions_Details).toBeVisible();
-
+    
     await merchantPage.tabSettlements.click();
+    await expect.soft(merchantPage.labelSettlements).toBeVisible();
+    await expect.soft(merchantPage.chartTile_Settlements).toBeVisible();
+    await expect.soft(merchantPage.button_chartTile_Settlements_Filters).toBeVisible();
+    await expect.soft(merchantPage.button_chartTile_Settlements_ExportToCSV).toBeVisible();
+    await expect.soft(merchantPage.columnHeader_chartTile_Settlements_Date).toBeVisible();
+    await expect.soft(merchantPage.columnHeader_chartTile_Settlements_SettlementAmount).toBeVisible();
+    await expect.soft(merchantPage.columnHeader_chartTile_Settlements_NoOfTransactions).toBeVisible();
+    await expect.soft(merchantPage.columnHeader_chartTile_Settlements_DepositNo).toBeVisible();
+    await expect.soft(merchantPage.columnHeader_chartTile_Settlements_Details).toBeVisible();
 
+    
+
+    //Actions
+    let firstDepositeNumber = await merchantPage.settlementsTable_FirstDepositNo.innerText();
+    //console.log("First Deposite Number: " + firstDepositeNumber);
+    await merchantPage.button_chartTile_Settlements_Filters.click();
+    await merchantPage.findDeposites.click(); 
+    await merchantPage.getDespositeByNumber(firstDepositeNumber).click();
+    await page.waitForLoadState('networkidle');
+    await merchantPage.viewResultsButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(merchantPage.settlementsTable_FirstDepositNo).toHaveText(firstDepositeNumber);
+
+    let settlementsDate = await merchantPage.filteredSettlementDate.innerText();
+    let settlementAmount = await merchantPage.filteredSettlementAmount.innerText();
+    let noOfTransactions = await merchantPage.filteredNoOfTransactions.innerText();
+
+    await merchantPage.button_chartTile_Settlements_ExportToCSV.click();
+    await page.waitForLoadState('networkidle');
+    await merchantPage.exportToCSVButton.click();
+    await page.waitForLoadState('networkidle');
+    await merchantPage.closeButton.click();
+
+    await merchantPage.viewResultsButton.click();
+    await page.waitForLoadState('networkidle');
+    await expect.soft(merchantPage.detailsSettlementDate).toHaveText(settlementsDate);
+    await expect.soft(merchantPage.detailsSettlementAmount).toHaveText(settlementAmount);
+    await expect.soft(merchantPage.detailsNoOfTransactions).toHaveText(noOfTransactions);
+
+    await expect.soft(merchantPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
+    const transactionAmounts = await merchantPage.allTransactionAmounts.allTextContents();
+    //All transactions should total to settlement amount
+    let totalAmount
+    for (const amountText of transactionAmounts) {
+      const amount = parseFloat(amountText.replace('$', '').replace(',', ''));
+      console.log('Transaction Amount: ', amount);
+      totalAmount = (totalAmount || 0) + amount;
+    }
+    console.log('Total of All Transactions: ', totalAmount);
+    const settlementAmountValue = parseFloat(settlementAmount.replace('$', '').replace(',', ''));
+    expect.soft(totalAmount).toBeCloseTo(settlementAmountValue, 2); 
 
     await sleep(5000);
     

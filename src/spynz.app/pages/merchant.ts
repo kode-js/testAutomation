@@ -32,7 +32,24 @@ export class MerchantPage {
     readonly columnHeader_chartTile_Settlements_NoOfTransactions: Locator
     readonly columnHeader_chartTile_Settlements_DepositNo: Locator;
     readonly columnHeader_chartTile_Settlements_Details: Locator;
+    readonly settlementsTable_FirstDepositNo: Locator;
+    readonly findDeposites: Locator;
+    readonly viewResultsButton: Locator;
+    readonly exportToCSVButton : Locator;
+    readonly closeButton: Locator;
+    readonly viewTransactionDetailsButton: Locator;
 
+    readonly filteredSettlementAmount: Locator;
+    readonly filteredSettlementDate: Locator;
+    readonly filteredNoOfTransactions: Locator;
+
+    readonly detailsSettlementDate: Locator;
+    readonly detailsSettlementAmount: Locator;
+    readonly detailsNoOfTransactions: Locator;
+
+    readonly allTransactionRows: Locator;
+    readonly allTransactionAmounts: Locator;
+    
     constructor(page: Page) {
         this.page = page;
         this.tabTransactions = page.locator('#MenuLink-transactions');
@@ -46,22 +63,44 @@ export class MerchantPage {
         this.quickViewTile_BusiestTradingDay = page.locator("xpath=//div[contains(@class,'quickview__tile') and .//div[text()='Busiest trading day']]");
         this.chartTile_NetSales = page.locator("xpath=//div[contains(@class,'chart-tile') and .//span[text()='Net sales']]");
         this.chartTile_Transactions = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]");    
-        this.button_chartTile_Transactions_Filters = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Filters']]");
-        this.button_chartTile_Transactions_ExportToCSV = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Export to CSV']]");
-        this.columnHeader_chartTile_Transactions_DateTime = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Date/Time']");
-        this.columnHeader_chartTile_Transactions_Amount = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Amount']");
-        this.columnHeader_chartTile_Transactions_TransactionType = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Transaction Type']");
-        this.columnHeader_chartTile_Transactions_CardType = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Card Type']");
-        this.columnHeader_chartTile_Transactions_PaymentStatus = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Payment Status']");
-        this.columnHeader_chartTile_Transactions_Details = this.chartTile_Transactions.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Details']");
+        this.button_chartTile_Transactions_Filters = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Filters']]");
+        this.button_chartTile_Transactions_ExportToCSV = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Export to CSV']]");
+        this.columnHeader_chartTile_Transactions_DateTime = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Date/Time']");
+        this.columnHeader_chartTile_Transactions_Amount = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Amount']");
+        this.columnHeader_chartTile_Transactions_TransactionType = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Transaction type']");
+        this.columnHeader_chartTile_Transactions_CardType = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Card type']");
+        this.columnHeader_chartTile_Transactions_PaymentStatus = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Payment status']");
+        this.columnHeader_chartTile_Transactions_Details = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Details']");
 
         this.chartTile_Settlements = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]");    
-        this.button_chartTile_Settlements_Filters = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Filters']]");
-        this.button_chartTile_Settlements_ExportToCSV = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Export to CSV']]");
-        this.columnHeader_chartTile_Settlements_Date = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Date']");
-        this.columnHeader_chartTile_Settlements_SettlementAmount = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Settlement Amount']");
-        this.columnHeader_chartTile_Settlements_NoOfTransactions = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='No. Transactions']");
-        this.columnHeader_chartTile_Settlements_DepositNo = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Deposit no.']");
-        this.columnHeader_chartTile_Settlements_Details = this.chartTile_Settlements.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Details']");
+        this.button_chartTile_Settlements_Filters = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Filters']]");
+        this.button_chartTile_Settlements_ExportToCSV = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Export to CSV']]");
+        this.columnHeader_chartTile_Settlements_Date = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Date']");
+        this.columnHeader_chartTile_Settlements_SettlementAmount = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Settlement amount']");
+        this.columnHeader_chartTile_Settlements_NoOfTransactions = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='No. transactions']");
+        this.columnHeader_chartTile_Settlements_DepositNo = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Deposit no.']");
+        this.columnHeader_chartTile_Settlements_Details = page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Details']");
+
+        this.settlementsTable_FirstDepositNo = page.locator("xpath=(//div[@class='depositNo']//div[@class='mobile-value'])[1]");
+        this.findDeposites = page.locator("//div[text()='Find deposit no.']");
+        this.viewResultsButton = page.locator("//div[text()='View results']");
+
+        this.exportToCSVButton = page.locator("xpath=//div[text()='Export to CSV']");
+        this.closeButton = page.locator("xpath=//button[.//span[text()='Close']]");
+        this.viewTransactionDetailsButton = page.locator("xpath=//div[@class='details' and .//span[text()='View details']]");
+        this.filteredSettlementDate = page.locator("div.date");
+        this.filteredSettlementAmount = page.locator("div.amount div.value");
+        this.filteredNoOfTransactions = page.locator("div.numTransactions div.mobile-inner div.mobile-value");
+
+        this.detailsSettlementDate = page.locator("xpath=//h3[text()='Settlement Date']/following-sibling::p[1]");
+        this.detailsSettlementAmount = page.locator("xpath=//h3[text()='Total Settlement Amount']/following-sibling::p[1]");
+        this.detailsNoOfTransactions = page.locator("xpath=//h3[text()='No. of transactions']/following-sibling::p[1]");
+        this.allTransactionRows = page.locator("div.simplebar-content div div.merchant-row");
+        this.allTransactionAmounts = this.allTransactionRows.locator("div.amount div.value");
+
+    }
+
+    getDespositeByNumber(depositeNumber: string): Locator {
+        return this.page.locator(`xpath=//div[@role='listbox']/div[@role='option' and text()='${depositeNumber}']`);
     }
 }
