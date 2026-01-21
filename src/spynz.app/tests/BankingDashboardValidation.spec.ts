@@ -70,14 +70,15 @@ test.describe('Test case 1', () => {
     let detailsSettlementDate = await merchantPage.detailsSettlementDate.textContent() as string;
     let detailsSettlementAmount = await merchantPage.detailsSettlementAmount.textContent() as string;
     let detailsNoOfTransactions = await merchantPage.detailsNoOfTransactions.textContent() as string;
-    // await expect.soft(merchantPage.detailsSettlementDate).toHaveText(settlementsDate);
-    // await expect.soft(merchantPage.detailsSettlementAmount).toHaveText(settlementAmount);
-    // await expect.soft(merchantPage.detailsNoOfTransactions).toHaveText(noOfTransactions);
+    
     expect.soft(detailsSettlementDate?.trim()).toBe(settlementsDate?.trim());
     expect.soft(detailsSettlementAmount?.trim()).toBe(settlementAmount?.trim());
     expect.soft(detailsNoOfTransactions?.trim()).toBe(noOfTransactions?.trim());
 
-    let detailsAllTransactionRows = await merchantPage.allTransactionRows.count();
+    //wait for 5 seconds to load all transactions
+    await sleep(5000);
+
+    let detailsAllTransactionRows = await merchantPage.allTransactionRows.count() as number;
     expect.soft(detailsAllTransactionRows).toBe(parseInt(noOfTransactions.replace(/,/g, '')));
     //await expect.soft(merchantPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
     const transactionAmounts = await merchantPage.allTransactionAmounts.allTextContents();
