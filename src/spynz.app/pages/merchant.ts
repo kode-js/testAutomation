@@ -88,11 +88,11 @@ export class MerchantPage {
         this.exportToCSVButton = page.locator("xpath=//div[text()='Export to CSV']");
         this.closeButton = page.locator("xpath=//button[.//span[text()='Close']]");
         this.viewTransactionDetailsButton = page.locator("xpath=//div[@class='details' and .//span[text()='View details']]");
-        this.filteredSettlementDate = page.locator("div.date");
-        this.filteredSettlementAmount = page.locator("div.amount div.value");
-        this.filteredNoOfTransactions = page.locator("div.numTransactions div.mobile-inner div.mobile-value");
-
-        this.detailsSettlementDate = page.locator("xpath=//h3[text()='Settlement Date']/following-sibling::p[1]");
+        this.filteredSettlementDate = page.locator("xpath=(//div[@class='date'])[1]");
+        this.filteredSettlementAmount = page.locator("xpath=(//div[@class='amount']//div[@class='value'])[1]");
+        this.filteredNoOfTransactions = page.locator("xpath=(//div[@class='numTransactions'])[1]//div[@class='mobile-value']");
+        
+        this.detailsSettlementDate = page.locator("xpath=//h3[text()='Settlement date']/following-sibling::p[1]");
         this.detailsSettlementAmount = page.locator("xpath=//h3[text()='Total Settlement Amount']/following-sibling::p[1]");
         this.detailsNoOfTransactions = page.locator("xpath=//h3[text()='No. of transactions']/following-sibling::p[1]");
         this.allTransactionRows = page.locator("div.simplebar-content div div.merchant-row");

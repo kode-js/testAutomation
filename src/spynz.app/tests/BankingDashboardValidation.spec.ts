@@ -54,9 +54,9 @@ test.describe('Test case 1', () => {
     await page.waitForLoadState('networkidle');
     await expect.soft(merchantPage.settlementsTable_FirstDepositNo).toHaveText(firstDepositeNumber);
 
-    let settlementsDate = await merchantPage.filteredSettlementDate.innerText();
-    let settlementAmount = await merchantPage.filteredSettlementAmount.innerText();
-    let noOfTransactions = await merchantPage.filteredNoOfTransactions.innerText();
+    let settlementsDate = await merchantPage.filteredSettlementDate.textContent();
+    let settlementAmount = await merchantPage.filteredSettlementAmount.textContent() as string;
+    let noOfTransactions = await merchantPage.filteredNoOfTransactions.textContent() as string;
 
     await merchantPage.button_chartTile_Settlements_ExportToCSV.click();
     await page.waitForLoadState('networkidle');
@@ -64,13 +64,22 @@ test.describe('Test case 1', () => {
     await page.waitForLoadState('networkidle');
     await merchantPage.closeButton.click();
 
-    await merchantPage.viewResultsButton.click();
+    await merchantPage.viewTransactionDetailsButton.click();
     await page.waitForLoadState('networkidle');
-    await expect.soft(merchantPage.detailsSettlementDate).toHaveText(settlementsDate);
-    await expect.soft(merchantPage.detailsSettlementAmount).toHaveText(settlementAmount);
-    await expect.soft(merchantPage.detailsNoOfTransactions).toHaveText(noOfTransactions);
+    
+    let detailsSettlementDate = await merchantPage.detailsSettlementDate.textContent() as string;
+    let detailsSettlementAmount = await merchantPage.detailsSettlementAmount.textContent() as string;
+    let detailsNoOfTransactions = await merchantPage.detailsNoOfTransactions.textContent() as string;
+    // await expect.soft(merchantPage.detailsSettlementDate).toHaveText(settlementsDate);
+    // await expect.soft(merchantPage.detailsSettlementAmount).toHaveText(settlementAmount);
+    // await expect.soft(merchantPage.detailsNoOfTransactions).toHaveText(noOfTransactions);
+    expect.soft(detailsSettlementDate?.trim()).toBe(settlementsDate?.trim());
+    expect.soft(detailsSettlementAmount?.trim()).toBe(settlementAmount?.trim());
+    expect.soft(detailsNoOfTransactions?.trim()).toBe(noOfTransactions?.trim());
 
-    await expect.soft(merchantPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
+    let detailsAllTransactionRows = await merchantPage.allTransactionRows.count();
+    expect.soft(detailsAllTransactionRows).toBe(parseInt(noOfTransactions.replace(/,/g, '')));
+    //await expect.soft(merchantPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
     const transactionAmounts = await merchantPage.allTransactionAmounts.allTextContents();
     //All transactions should total to settlement amount
     let totalAmount

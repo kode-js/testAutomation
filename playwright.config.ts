@@ -30,7 +30,7 @@ export default defineConfig({
   expect: {
     timeout: 20 * 1000, // Sets default expect timeout to 90 seconds
   },
-  testDir: `./src/${channel}/tests`,
+  testDir: `./src/spynz.app/tests`,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
