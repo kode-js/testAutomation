@@ -1,9 +1,82 @@
 import { defineConfig, devices } from '@playwright/test';
+import test from 'node:test';
 // Get current timestamp for unique report folder
 const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
+const channels = ['bac', 'spynz', 'nsp', 'vm', 'spyau'];
+const envs = ['uat', 'prod', 'dev'];
 
-const env = process.env.ENV || 'uat';
-const channel = process.env.CHANNEL || 'bac';
+const env = process.env.ENV || '';
+const channel = process.env.CHANNEL || '';
+
+if (!channels.includes(channel)) {
+  console.error(`Invalid CHANNEL value. Expected one of: ${channels.join(', ')}`);
+  process.exit(1);
+}
+
+if (!envs.includes(env)) {
+  console.error(`Invalid ENV value. Expected one of: ${envs.join(', ')}`);
+  process.exit(1);
+}
+
+// Set baseURL based on CHANNEL and ENV
+let baseURL = '';
+let testDir = '';
+if (channel === 'bac') {
+  if (env === 'uat') {
+    baseURL = 'https://bac-uat.9spokes.io';
+  } else if (env === 'prod') {
+    baseURL = 'https://bac-prd.9spokes.io';
+  } else if (env === 'dev') {
+    baseURL = 'https://bac-dev.9spokes.io';
+  }
+  testDir = `./src/bac/tests`;
+}
+else if (channel === 'spynz') {
+  if (env === 'uat') {
+    baseURL = 'https://spynz.app-uat.9spokes.dev';
+  } else if (env === 'prod') {
+    baseURL = '';
+  } else if (env === 'dev') {
+    baseURL = '';
+  }
+  testDir = `./src/spynz/tests`;
+}else if (channel === 'nsp') {
+  if (env === 'uat') {
+    baseURL = 'https://nsp-dev.9spokes.io';
+  } else if (env === 'prod') {
+    baseURL = 'https://nsp-prd.9spokes.io';
+  } else if (env === 'dev') {
+    baseURL = 'https://nsp-dev.9spokes.io';
+  }
+  testDir = `./src/nsp/tests`;
+}else if (channel === 'vm') {
+  if (env === 'uat') {
+    baseURL = 'https://vm-uat.9spokes.io';
+  } else if (env === 'prod') {
+    baseURL = 'https://vm-prd.9spokes.io';
+  } else if (env === 'dev') {
+    baseURL = 'https://vm-dev.9spokes.io';
+  }
+  testDir = `./src/vm/tests`;
+}else if (channel === 'spyau') {
+  if (env === 'uat') {
+    baseURL = ' https://spyau.app-uat.9spokes.dev';
+  } else if (env === 'prod') {
+    baseURL = '';
+  } else if (env === 'dev') {
+    baseURL = '';
+  }
+  testDir = `./src/spyau/tests`;
+}
+
+if(baseURL === '') {
+  console.error(`Base URL not defined for CHANNEL: ${channel} and ENV: ${env}`);
+  process.exit(1);
+}
+
+console.log(`Running tests on ${channel} environment: ${env}`);
+console.log(`Base URL: ${baseURL}`);
+
 
 //get current display resolution
 const { execSync } = require('child_process');
@@ -30,7 +103,7 @@ export default defineConfig({
   expect: {
     timeout: 20 * 1000, // Sets default expect timeout to 90 seconds
   },
-  testDir: `./src/spynz.app/tests`,
+  testDir: testDir,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -46,8 +119,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // if channel is 'bac' then baseURL = 'https://bac-uat.9spokes.io/', 'spynz' then baseURL = 'https://spynz.app-uat.9spokes.dev/'
-    baseURL: 'https://spynz.app-uat.9spokes.dev/',
+   baseURL: baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 

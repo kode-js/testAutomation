@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { LoginPage } from '../pages/loginPage';
 import { HomePage } from '../pages/homepage';
 import { MikomiPage } from '../pages/mikomiConnection';
 import { AccountsCanvas } from '../pages/accountsCanvas';
 import { sleep } from '../../utils/utils';
+import * as actions from '../../utils/actions';
 import login from '../testdata/login.json' assert { type: 'json' };
 
 test.describe('Test case 1', () => {
@@ -16,30 +18,32 @@ test.describe('Test case 1', () => {
     const accountsCanvas = new AccountsCanvas(page);
     await loginPage.navigate();
     await loginPage.login(login.boa.username, login.boa.password);
-    await expect.soft(page).toHaveTitle(login.boa.homepageTitle);
-    await homePage.accountsHeaderButton.click();
+    await allure.step(`Verify page title is ${login.boa.homepageTitle}`, async () => {
+      await expect.soft(page).toHaveTitle(login.boa.homepageTitle);
+    });
+    await actions.clickElement(homePage.accountsHeaderButton);
 
-    if (await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').isVisible()) {
-      await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').click();
+    if (await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').locator.isVisible()) {
+      await actions.clickElement(accountsCanvas.removeButtonByBankName('Akoya Mikomo bank'));
       await page.waitForLoadState('networkidle');
-      await accountsCanvas.confirmRemoveButton.click();
+      await actions.clickElement(accountsCanvas.confirmRemoveButton);
       await page.waitForLoadState('networkidle');
     }
 
-    await accountsCanvas.getBankByName(bankName).click();
-    await accountsCanvas.termsAndConditionsCheckbox.check();
+    await actions.clickElement(accountsCanvas.getBankByName(bankName));
+    await accountsCanvas.termsAndConditionsCheckbox.locator.check();
     await page.waitForLoadState('networkidle');
-    await accountsCanvas.proceedButton.click();
+    await actions.clickElement(accountsCanvas.proceedButton);
     await page.waitForLoadState('networkidle');
 
     //mikomo login
     await loginPage.mikomoLogin(login.amb.username, login.amb.password);
     await page.waitForLoadState('networkidle');
     //click on terms next button
-    await miPage.termsNextButton.click();
+    await actions.clickElement(miPage.termsNextButton);
     await page.waitForLoadState('networkidle');
     //allAccontsCheckboxes check all checkboxes
-    const allChecks = await miPage.allAccontsCheckboxes.all();
+    const allChecks = await miPage.allAccontsCheckboxes.locator.all();
     for (const check of allChecks) {
       await check.click();
       //hard wait for .5 seconds
@@ -51,15 +55,19 @@ test.describe('Test case 1', () => {
       contentType: 'image/png',
     });
 
-    await miPage.accountsApproveButton.click();
+    await actions.clickElement(miPage.accountsApproveButton);
     //close button to be visible
-    await expect.soft(accountsCanvas.accountsCanvasCloseButton).toBeVisible();
+    await allure.step('Accounts canvas close button is visible', async () => {
+      await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+    });
     //loading spinner to be visible and then hidden
-    await expect.soft(miPage.loadingSpinner).toBeVisible();
-    await expect.soft(miPage.loadingSpinner).toBeHidden({ timeout: 30000 });
+    await allure.step('Loading spinner appears then hides', async () => {
+      await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
+      await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
+    });
 
     //verify total balance is equal to sum of all account balances
-    const balances = await miPage.allAccountBalances.allTextContents();
+    const balances = await miPage.allAccountBalances.locator.allTextContents();
     let sum = 0;
     for (const bal of balances) {
       //remove $ and , from string and convert to number
@@ -67,90 +75,110 @@ test.describe('Test case 1', () => {
       sum += num;
     }
     //get total balance text, remove $ and , and convert to number
-    const totalBalText = await miPage.totalAccountBalance.textContent();
+    const totalBalText = await miPage.totalAccountBalance.locator.textContent();
     const totalBal = parseFloat((totalBalText as string).replace('$', '').replace(',', ''));
     console.log(`Sum of balances: ${sum}, Total balance: ${totalBal}`);
-    expect.soft(sum).toBeCloseTo(totalBal, 2);
+    await allure.step('Sum of account balances matches total balance', async () => {
+      await expect.soft(sum).toBeCloseTo(totalBal, 2);
+    });
 
 
-    await accountsCanvas.accountsCanvasCloseButton.click();
+    await actions.clickElement(accountsCanvas.accountsCanvasCloseButton);
     await page.waitForLoadState('networkidle');
-    await expect.soft(miPage.successBanner).toBeVisible();
-    await expect.soft(miPage.nonEligibleAccountsBanner).toBeVisible();
+    await allure.step('Success and non-eligible banners are visible', async () => {
+      await expect.soft(miPage.successBanner.locator).toBeVisible();
+      await expect.soft(miPage.nonEligibleAccountsBanner.locator).toBeVisible();
+    });
     await test.info().attach(`screenshot- Connection`, {
       body: await page.screenshot(),
       contentType: 'image/png',
     });
 
-    await expect.soft(homePage.closingCashBalanceTile).toBeVisible();
-    await expect.soft(homePage.cashTrendTile).toBeVisible();
-    await expect.soft(homePage.moneyInTile).toBeVisible();
-    await expect.soft(homePage.moneyOutTile).toBeVisible();
+    await allure.step('Quickview tiles are visible', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toBeVisible();
+      await expect.soft(homePage.cashTrendTile.locator).toBeVisible();
+      await expect.soft(homePage.moneyInTile.locator).toBeVisible();
+      await expect.soft(homePage.moneyOutTile.locator).toBeVisible();
+    });
 
-    await expect.soft(homePage.balanceSummaryTile).toBeVisible();
-    await expect.soft(homePage.transactionSummaryTile).toBeVisible();
-    await expect.soft(homePage.availableBalancesTile).toBeVisible();
-    await expect.soft(homePage.topInboundCashSourcesTile).toBeVisible();
-    await expect.soft(homePage.topOutboundCashSourcesTile).toBeVisible();
+    await allure.step('Dashboard tiles are visible', async () => {
+      await expect.soft(homePage.balanceSummaryTile.locator).toBeVisible();
+      await expect.soft(homePage.transactionSummaryTile.locator).toBeVisible();
+      await expect.soft(homePage.availableBalancesTile.locator).toBeVisible();
+      await expect.soft(homePage.topInboundCashSourcesTile.locator).toBeVisible();
+      await expect.soft(homePage.topOutboundCashSourcesTile.locator).toBeVisible();
+    });
 
 
-    await expect.soft(homePage.closingCashBalanceTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.cashTrendTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.moneyInTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.moneyOutTile).not.toContainText('Cannot load the data');
+    await allure.step('Quickview tiles do not contain load error text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.cashTrendTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.moneyInTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.moneyOutTile.locator).not.toContainText('Cannot load the data');
+    });
 
-    await expect.soft(homePage.balanceSummaryTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.transactionSummaryTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.availableBalancesTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.topInboundCashSourcesTile).not.toContainText('Cannot load the data');
-    await expect.soft(homePage.topOutboundCashSourcesTile).not.toContainText('Cannot load the data');
+    await allure.step('Dashboard tiles do not contain load error text', async () => {
+      await expect.soft(homePage.balanceSummaryTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.transactionSummaryTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.availableBalancesTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.topInboundCashSourcesTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.topOutboundCashSourcesTile.locator).not.toContainText('Cannot load the data');
+    });
 
     await test.info().attach(`screenshot- Tiles`, {
       body: await page.screenshot(),
       contentType: 'image/png',
     });
 
-    await homePage.dailyButton.click();
+    await actions.clickElement(homePage.dailyButton);
     await page.waitForLoadState('networkidle');
-    await expect.soft(homePage.closingCashBalanceTile).toContainText('Since yesterday');
-    await expect.soft(homePage.cashTrendTile).toContainText('Since yesterday');
-    await expect.soft(homePage.moneyInTile).toContainText('Since yesterday');
-    await expect.soft(homePage.moneyOutTile).toContainText('Since yesterday');
+    await allure.step('Daily view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('Since yesterday');
+    });
     //screenshot boardroom quick view section
     await test.info().attach(`screenshot- Daily View`, {
-      body: await homePage.boardQuickViewSection.screenshot(),
+      body: await homePage.boardQuickViewSection.locator.screenshot(),
       contentType: 'image/png',
     });
 
-    await homePage.weeklyButton.click();
+    await actions.clickElement(homePage.weeklyButton);
     await page.waitForLoadState('networkidle');
-    await expect.soft(homePage.closingCashBalanceTile).toContainText('From last week');
-    await expect.soft(homePage.cashTrendTile).toContainText('From last week');
-    await expect.soft(homePage.moneyInTile).toContainText('From last week');
-    await expect.soft(homePage.moneyOutTile).toContainText('From last week');
+    await allure.step('Weekly view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('From last week');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('From last week');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('From last week');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('From last week');
+    });
     await test.info().attach(`screenshot- Weekly View`, {
-      body: await homePage.boardQuickViewSection.screenshot(),
+      body: await homePage.boardQuickViewSection.locator.screenshot(),
       contentType: 'image/png',
     });
 
-    await homePage.monthlyButton.click();
+    await actions.clickElement(homePage.monthlyButton);
     await page.waitForLoadState('networkidle');
-    await expect.soft(homePage.closingCashBalanceTile).toContainText('From last month');
-    await expect.soft(homePage.cashTrendTile).toContainText('From last month');
-    await expect.soft(homePage.moneyInTile).toContainText('From last month');
-    await expect.soft(homePage.moneyOutTile).toContainText('From last month');
+    await allure.step('Monthly view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('From last month');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('From last month');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('From last month');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('From last month');
+    });
     await test.info().attach(`screenshot- Monthly View`, {
-      body: await homePage.boardQuickViewSection.screenshot(),
+      body: await homePage.boardQuickViewSection.locator.screenshot(),
       contentType: 'image/png',
     });
 
     //Remove connection
-    await homePage.accountsHeaderButton.click();
-    await accountsCanvas.removeButtonByBankName(bankName).click();
+    await actions.clickElement(homePage.accountsHeaderButton);
+    await actions.clickElement(accountsCanvas.removeButtonByBankName(bankName));
     await page.waitForLoadState('networkidle');
-    await accountsCanvas.confirmRemoveButton.click();
+    await actions.clickElement(accountsCanvas.confirmRemoveButton);
     await page.waitForLoadState('networkidle');
-    await expect.soft(accountsCanvas.getBankByName(bankName)).toBeVisible();
+    await allure.step(`Verify ${bankName} is visible after removal`, async () => {
+      await expect.soft(accountsCanvas.getBankByName(bankName).locator).toBeVisible();
+    });
     await test.info().attach(`screenshot- Removed Connection`, {
       body: await page.screenshot(),
       contentType: 'image/png',

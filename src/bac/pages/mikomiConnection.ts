@@ -1,26 +1,27 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+import { UiElement } from '../../utils/UiElement';
 
 export class MikomiPage {
     readonly page: Page;
-    readonly termsNextButton: Locator;
-    readonly allAccontsCheckboxes: Locator;
-    readonly accountsApproveButton: Locator;
-    readonly allAccountBalances: Locator;
-    readonly totalAccountBalance: Locator;
-    readonly successBanner: Locator;
-    readonly nonEligibleAccountsBanner: Locator;
-    readonly loadingSpinner: Locator;
+    readonly termsNextButton: UiElement;
+    readonly allAccontsCheckboxes: UiElement;
+    readonly accountsApproveButton: UiElement;
+    readonly allAccountBalances: UiElement;
+    readonly totalAccountBalance: UiElement;
+    readonly successBanner: UiElement;
+    readonly nonEligibleAccountsBanner: UiElement;
+    readonly loadingSpinner: UiElement;
 
     constructor(page: Page) {
         this.page = page;
-        this.termsNextButton = page.locator('button#terms-next');
-        this.allAccontsCheckboxes = page.locator("//input[@type='checkbox' and @name='account']/..");
-        this.accountsApproveButton = page.locator('button#accounts-approve');
-        this.allAccountBalances = page.locator("//div[contains(@class,'account__balance')]");
-        this.totalAccountBalance = page.locator("//div[@class='accountsDrawer__summary-value']");
-        this.successBanner = page.locator("//div[text()='Your eligible Akoya Mikomo account(s) are successfully connected.' and contains(@class,'alert-success')]");
-        this.nonEligibleAccountsBanner = page.locator("//div[text()='You have attempted to connect a non-eligible account(s). Only checking and savings accounts can be connected to the dashboard.' and contains(@class,'alert-warning')]");
-        this.loadingSpinner = page.locator("//div[@aria-label='Loading' and @role='alert']");
+        this.termsNextButton = UiElement.of(page.locator('button#terms-next'), 'Terms Next button');
+        this.allAccontsCheckboxes = UiElement.of(page.locator("//input[@type='checkbox' and @name='account']/.."), 'All accounts checkboxes');
+        this.accountsApproveButton = UiElement.of(page.locator('button#accounts-approve'), 'Accounts approve button');
+        this.allAccountBalances = UiElement.of(page.locator("//div[contains(@class,'account__balance')]"), 'All account balances');
+        this.totalAccountBalance = UiElement.of(page.locator("//div[@class='accountsDrawer__summary-value']"), 'Total account balance');
+        this.successBanner = UiElement.of(page.locator("//div[text()='Your eligible Akoya Mikomo account(s) are successfully connected.' and contains(@class,'alert-success')]"), 'Success banner');
+        this.nonEligibleAccountsBanner = UiElement.of(page.locator("//div[text()='You have attempted to connect a non-eligible account(s). Only checking and savings accounts can be connected to the dashboard.' and contains(@class,'alert-warning')]"), 'Non-eligible accounts banner');
+        this.loadingSpinner = UiElement.of(page.locator("//div[@aria-label='Loading' and @role='alert']"), 'Loading spinner');
     }
     
 }
