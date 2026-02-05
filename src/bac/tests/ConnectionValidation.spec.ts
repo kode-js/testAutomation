@@ -58,12 +58,16 @@ test.describe('Test case 1', () => {
     await actions.clickElement(miPage.accountsApproveButton);
     //close button to be visible
     await allure.step('Accounts canvas close button is visible', async () => {
-      await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+      await allure.step('Verify accounts canvas close button visibility', async () => {
+        await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+      });
     });
     //loading spinner to be visible and then hidden
     await allure.step('Loading spinner appears then hides', async () => {
-      await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
-      await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
+      await allure.step('Verify loading spinner visibility then hidden', async () => {
+        await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
+        await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
+      });
     });
 
     //verify total balance is equal to sum of all account balances
@@ -79,7 +83,11 @@ test.describe('Test case 1', () => {
     const totalBal = parseFloat((totalBalText as string).replace('$', '').replace(',', ''));
     console.log(`Sum of balances: ${sum}, Total balance: ${totalBal}`);
     await allure.step('Sum of account balances matches total balance', async () => {
-      await expect.soft(sum).toBeCloseTo(totalBal, 2);
+      await allure.step('Compare computed sum vs total balance', async () => {
+        await test.info().attach('expected-totalBalance', { body: Buffer.from(String(totalBal)), contentType: 'text/plain' });
+        await test.info().attach('actual-sum', { body: Buffer.from(String(sum)), contentType: 'text/plain' });
+        await expect.soft(sum).toBeCloseTo(totalBal, 2);
+      });
     });
 
 

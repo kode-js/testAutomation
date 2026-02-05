@@ -60,12 +60,16 @@ test.describe('Test case 1', () => {
       await actions.clickElement(miPage.accountsApproveButton);
       //close button to be visible
       await allure.step('Accounts canvas close button is visible', async () => {
-        await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+        await allure.step('Verify accounts canvas close button visibility', async () => {
+          await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+        });
       });
       //loading spinner to be visible and then hidden
       await allure.step('Loading spinner appears then hides', async () => {
-        await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
-        await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
+        await allure.step('Verify loading spinner visibility and hidden state', async () => {
+          await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
+          await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
+        });
       });
 
       await actions.clickElement(accountsCanvas.accountsCanvasCloseButton);

@@ -41,13 +41,15 @@ test('Popular banks validation', async ({ page }) => {
   }
 
   await allure.step('Accounts canvas shows expected elements', async () => {
-    await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
-    await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
-    await expect.soft(accountsCanvas.bankingTab.locator).toBeVisible();
-    await expect.soft(accountsCanvas.appsTab.locator).toBeVisible();
-    await expect.soft(accountsCanvas.bankingTab.locator).toHaveAttribute('aria-selected', 'true');
-    await expect.soft(accountsCanvas.searchMoreBanksTxt.locator).toBeVisible();
-    await expect.soft(accountsCanvas.popularBanksLabel.locator).toBeVisible();
+    await allure.step('Verify accounts canvas elements visibility and attributes', async () => {
+      await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
+      await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
+      await expect.soft(accountsCanvas.bankingTab.locator).toBeVisible();
+      await expect.soft(accountsCanvas.appsTab.locator).toBeVisible();
+      await expect.soft(accountsCanvas.bankingTab.locator).toHaveAttribute('aria-selected', 'true');
+      await expect.soft(accountsCanvas.searchMoreBanksTxt.locator).toBeVisible();
+      await expect.soft(accountsCanvas.popularBanksLabel.locator).toBeVisible();
+    });
   });
   const bankNames = await accountsCanvas.listOfBanks.locator.allTextContents()
   const sortedBankNames = [...bankNames].sort((a, b) => a.localeCompare(b));

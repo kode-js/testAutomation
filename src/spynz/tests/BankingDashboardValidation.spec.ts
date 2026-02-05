@@ -99,10 +99,9 @@ test.describe('Test case 1', () => {
     let totalAmount = 0;
     for (const amountText of transactionAmounts) {
       const amount = parseFloat(amountText.replace('$', '').replace(',', ''));
-      console.log('Transaction Amount: ', amount);
       totalAmount = (totalAmount || 0) + amount;
     }
-    console.log('Total of All Transactions: ', totalAmount);
+    //console.log('Total of All Transactions: ', totalAmount);
     const settlementAmountValue = parseFloat(settlementAmount.replace('$', '').replace(',', ''));
     await allure.step('Verify sum of transactions equals settlement amount', async () => {
       expect.soft(totalAmount).toBeCloseTo(settlementAmountValue, 2);
