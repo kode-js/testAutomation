@@ -1,12 +1,21 @@
 import { defineConfig, devices } from '@playwright/test';
-import test from 'node:test';
+import { execSync } from 'child_process';
 // Get current timestamp for unique report folder
 const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
 const channels = ['bac', 'spynz', 'nsp', 'vm', 'spyau'];
 const envs = ['uat', 'prod', 'dev'];
 
-const env = process.env.ENV || '';
-const channel = process.env.CHANNEL || '';
+let env = (process.env.ENV || '').trim();
+let channel = (process.env.CHANNEL || '').trim();
+
+if (!env) {
+  console.warn('ENV not set — defaulting to "uat" for local runs.');
+  env = 'uat';
+}
+if (!channel) {
+  console.warn('CHANNEL not set — defaulting to "bac" for local runs.');
+  channel = 'bac';
+}
 
 if (!channels.includes(channel)) {
   console.error(`Invalid CHANNEL value. Expected one of: ${channels.join(', ')}`);
@@ -33,7 +42,7 @@ if (channel === 'bac') {
 }
 else if (channel === 'spynz') {
   if (env === 'uat') {
-    baseURL = 'https://spynz.app-uat.9spokes.dev';
+    baseURL = 'https://spyau.app-uat.9spokes.dev';
   } else if (env === 'prod') {
     baseURL = '';
   } else if (env === 'dev') {
@@ -78,25 +87,22 @@ console.log(`Running tests on ${channel} environment: ${env}`);
 console.log(`Base URL: ${baseURL}`);
 
 
-//get current display resolution
-const { execSync } = require('child_process');
-const resolution = execSync('system_profiler SPDisplaysDataType | grep Resolution').toString().trim();
-console.log('Current Display Resolution:', resolution);
-const resWidth = parseInt(resolution.split(' ')[1]);
-const resHeight = parseInt(resolution.split(' ')[3]);
-console.log(`Width: ${resWidth}, Height: ${resHeight}`);
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+// Get current display resolution (macOS). Use regex and fall back to sensible defaults.
+let resWidth = 1280;
+let resHeight = 800;
+try {
+  const resolution = execSync('system_profiler SPDisplaysDataType | grep Resolution').toString().trim();
+  console.log('Current Display Resolution:', resolution);
+  const match = resolution.match(/Resolution:\s*(\d+)\s*x\s*(\d+)/i);
+  if (match) {
+    resWidth = parseInt(match[1], 10);
+    resHeight = parseInt(match[2], 10);
+  } else {
+    console.warn('Could not parse display resolution; using fallback 1280x800.');
+  }
+} catch (e) {
+  console.warn('Failed to get display resolution, using fallback 1280x800.');
+}
 
 export default defineConfig({
   timeout: 60 * 60 * 1000,
@@ -114,8 +120,18 @@ export default defineConfig({
   //workers: process.env.CI ? 1 : undefined,
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  //reporter:  [['html', {  outputFile: 'results/'+ timeStamp +'/test-results.html' }]],
-  reporter: [["line"], ["allure-playwright"]],
+  reporter: [
+    ['list'], // keep console output
+    ['allure-playwright',
+      {
+        outputFolder: 'allure-results',
+        suiteTitle: false,
+        showHooks: false,
+        detail: false,
+        hooks: false,
+        trace: 'off'
+      }], 
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -127,36 +143,7 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    /* {
-       name: 'chromium',
-       use: { ...devices['Desktop Chrome'] },
-     },
- 
-     {
-       name: 'firefox',
-       use: { ...devices['Desktop Firefox'] },
-     },
- 
-     {
-       name: 'webkit',
-       use: { ...devices['Desktop Safari'] },
-     },
- */
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
+   
     {
       name: 'Google Chrome',
       use: {
@@ -169,11 +156,4 @@ export default defineConfig({
     //   use: { ...devices['Desktop Firefox'] },
     // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
