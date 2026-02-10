@@ -42,7 +42,7 @@ if (channel === 'bac') {
 }
 else if (channel === 'spynz') {
   if (env === 'uat') {
-    baseURL = 'https://spyau.app-uat.9spokes.dev';
+    baseURL = 'https://spynz.app-uat.9spokes.dev';
   } else if (env === 'prod') {
     baseURL = '';
   } else if (env === 'dev') {
@@ -147,7 +147,7 @@ export default defineConfig({
     {
       name: 'Google Chrome',
       use: {
-        ...devices['Desktop Chrome'], channel: 'chrome', headless: false, viewport: { width: resWidth / 2, height: resHeight },
+        ...devices['Desktop Chrome'], channel: 'chrome', headless: false, viewport: { width: resWidth / 2, height: resHeight/2 },
 
       },
     },

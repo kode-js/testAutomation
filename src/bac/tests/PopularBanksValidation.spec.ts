@@ -33,7 +33,7 @@ test('Popular banks validation', async ({ page }) => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });
   await page.waitForLoadState('networkidle');
-    if(await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').locator.isVisible()) {
+  if (await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').locator.isVisible()) {
     await actions.clickElement(accountsCanvas.removeButtonByBankName('Akoya Mikomo bank'));
     await page.waitForLoadState('networkidle');
     await actions.clickElement(accountsCanvas.confirmRemoveButton);
@@ -63,12 +63,13 @@ test('Popular banks validation', async ({ page }) => {
       await actions.clickElement(bankButton);
       await page.waitForLoadState('networkidle');
       await expect.soft(accountsCanvas.bankHeaderTitle.locator).toHaveText(bank.bank);
+      //add screenshot to html report
+      await test.info().attach(`screenshot-${bank.bank}`, {
+        body: await page.screenshot(),
+        contentType: 'image/png',
+      });
     });
-    //add screenshot to html report
-    await test.info().attach(`screenshot-${bank.bank}`, {
-      body: await page.screenshot(),
-      contentType: 'image/png',
-    });
+
     //click on cancel button
     await actions.clickElement(accountsCanvas.canvasCancelButton);
     await page.waitForLoadState('networkidle');

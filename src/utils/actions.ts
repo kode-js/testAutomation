@@ -1,6 +1,6 @@
 import * as allure from "allure-js-commons";
 import { UiElement } from './UiElement';
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 
 export async function waitFor(page: Page, seconds: number) {
@@ -20,3 +20,4 @@ export async function enterText(element: UiElement, value: string) {
         });
     }
 }
+
