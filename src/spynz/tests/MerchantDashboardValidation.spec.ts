@@ -7,7 +7,7 @@ import { sleep } from '../../utils/utils';
 import * as actions from '../../utils/actions';
 import login from '../testdata/login.json' assert { type: 'json' };
 
-test('Verify Connection', async ({ page }) => {
+test('Merchant Dashboard Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
   const merchantPage = new MerchantPage(page);
