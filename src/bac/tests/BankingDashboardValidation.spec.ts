@@ -77,15 +77,16 @@ test('Banking Dashboard Validation', async ({ page }) => {
 
   //mouse hover on balance summary chart
   await homePage.balanceSummaryChart.locator.hover();
-  await test.info().attach(`screenshot- Balance Summary Chart`, {
-    body: await page.screenshot(),
-    contentType: 'image/png',
-  });
+
   //wait for 1 second
   await sleep(1000);
   //verify closing balance label is visible
   await allure.step('Closing balance label is visible', async () => {
     await expect.soft(homePage.closingBalanceLabel.locator).toBeVisible();
+    await test.info().attach(`screenshot- Balance Summary Chart`, {
+      body: await page.screenshot(),
+      contentType: 'image/png',
+    });
   });
   //get the text of closing balance label
   const closingBalanceText = await homePage.closingBalanceLabel.locator.textContent();
@@ -95,7 +96,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   //verify that current balance date is equal to chart selected value text chartSelectedValue
   const tickValue = await homePage.chartSelectedValue.locator.textContent();
   await allure.step('Chart selected value equals closing balance date', async () => {
-    await expect.soft(tickValue).toBe(currentBalanceDate);
+    expect.soft(tickValue).toBe(currentBalanceDate);
   });
 
   //Navigate to date picker and go to 12 months back and select 10th day
@@ -107,6 +108,10 @@ test('Banking Dashboard Validation', async ({ page }) => {
   }
   await actions.clickElement(homePage.datePickerDay10Cell);
   await page.waitForLoadState('networkidle');
+
+  await allure.step('Expect Top Outbound Cash Destinations to be Loaded', async () => {
+    await expect(homePage.topOutboundCashSourcesTile.locator).toBeVisible();
+  });
 
   await actions.clickElement(homePage.topOutboundCashDestinationsCheck);
   //sleep for 2 seconds

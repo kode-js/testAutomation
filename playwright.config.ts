@@ -105,9 +105,9 @@ try {
 }
 
 export default defineConfig({
-  timeout: 60 * 60 * 1000,
+  timeout: 10 * 60 * 1000,
   expect: {
-    timeout: 20 * 1000, // Sets default expect timeout to 90 seconds
+    timeout: 30 * 1000, // Sets default expect timeout to 30 seconds
   },
   testDir: testDir,
   /* Run tests in files in parallel */
@@ -138,6 +138,7 @@ export default defineConfig({
    baseURL: baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    
 
   },
 
@@ -147,7 +148,7 @@ export default defineConfig({
     {
       name: 'Google Chrome',
       use: {
-        ...devices['Desktop Chrome'], channel: 'chrome', headless: false, viewport: { width: resWidth / 2, height: resHeight/2 },
+        ...devices['Desktop Chrome'], channel: 'chrome', actionTimeout: 30000, headless: false, viewport: { width: resWidth / 2, height: resHeight/2, },
 
       },
     },

@@ -19,8 +19,8 @@ export class MikomiPage {
         this.accountsApproveButton = UiElement.of(page.locator('button#accounts-approve'), 'Accounts approve button');
         this.allAccountBalances = UiElement.of(page.locator("//div[contains(@class,'account__balance')]"), 'All account balances');
         this.totalAccountBalance = UiElement.of(page.locator("//div[@class='accountsDrawer__summary-value']"), 'Total account balance');
-        this.successBanner = UiElement.of(page.locator("//div[text()='Your eligible Akoya Mikomo account(s) are successfully connected.' and contains(@class,'alert-success')]"), 'Success banner');
-        this.nonEligibleAccountsBanner = UiElement.of(page.locator("//div[text()='You have attempted to connect a non-eligible account(s). Only checking and savings accounts can be connected to the dashboard.' and contains(@class,'alert-warning')]"), 'Non-eligible accounts banner');
+        this.successBanner = UiElement.of(page.locator("//div[contains(@class,'alert-success')]//div[text()='Your eligible Akoya Mikomo account(s) are successfully connected.']"), 'Success banner');
+        this.nonEligibleAccountsBanner = UiElement.of(page.locator("//div[contains(@class,'alert-warning')]//div[text()='You have attempted to connect a non-eligible account(s). Only checking and savings accounts can be connected to the dashboard.']"), 'Non-eligible accounts banner');
         this.loadingSpinner = UiElement.of(page.locator("//div[@aria-label='Loading' and @role='alert']"), 'Loading spinner');
     }
     

@@ -40,6 +40,8 @@ export class HomePage {
 
     readonly topOutboundCashDestinationsCheck: UiElement;
 
+    readonly tileLoadSpiner: UiElement;
+
     constructor(page: Page) {
         this.page = page;
         this.homeLogo = UiElement.of(page.locator('header #dashboard'), 'Home logo');
@@ -53,25 +55,25 @@ export class HomePage {
         this.cashTrendTile = UiElement.of(page.locator("xpath=//div[@class='quickview__tile' and .//*[text()='Cash trend']]") , 'Cash trend tile');
         this.moneyInTile = UiElement.of(page.locator("xpath=//div[@class='quickview__tile' and .//*[text()='Money in']]") , 'Money in tile');
         this.moneyOutTile = UiElement.of(page.locator("xpath=//div[@class='quickview__tile' and .//*[text()='Money out']]") , 'Money out tile');
-        this.balanceSummaryTile = UiElement.of(page.locator('#banking-banking-balance-summary'), 'Balance Summary tile');
-        this.transactionSummaryTile = UiElement.of(page.locator('#banking-banking-transaction-summary'), 'Transaction Summary tile');
-        this.availableBalancesTile = UiElement.of(page.locator('#banking-banking-account-balances'), 'Available Balances tile');
-        this.topInboundCashSourcesTile = UiElement.of(page.locator('#banking-banking-top5-inbound-payees'), 'Top inbound cash sources tile');
-        this.topOutboundCashSourcesTile = UiElement.of(page.locator('#banking-banking-top5-outbound-payees'), 'Top outbound cash sources tile');
+        this.balanceSummaryTile = UiElement.of(page.locator("xpath=//span[text()='Balance summary']/ancestor::div[contains(@class,'wc-chart-tile')]"), 'Balance Summary tile title');
+        this.transactionSummaryTile = UiElement.of(page.locator("#banking-banking-transaction-summary"), 'Transaction Summary tile title');
+        this.availableBalancesTile = UiElement.of(page.locator("#banking-banking-account-balances"), 'Available Balances tile title');
+        this.topInboundCashSourcesTile = UiElement.of(page.locator("#banking-banking-top5-inbound-payees"), 'Top inbound cash sources tile title');
+        this.topOutboundCashSourcesTile = UiElement.of(page.locator("#banking-banking-top5-outbound-payees"), 'Top outbound cash destinations tile title');
         this.dailyButton = UiElement.of(page.locator("xpath=//button[.//span[text()='Daily']]") , 'Daily range button');
         this.weeklyButton = UiElement.of(page.locator("xpath=//button[.//span[text()='Weekly']]") , 'Weekly range button');
         this.monthlyButton = UiElement.of(page.locator("xpath=//button[.//span[text()='Monthly']]") , 'Monthly range button');
         this.boardQuickViewSection = UiElement.of(page.locator('div.board__quick-view'), 'Board quick view section');
-        this.balanceSummaryChart = UiElement.of(page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[@class='chart-wrapper']"), 'Balance summary chart');
-        this.closingBalanceLabel = UiElement.of(page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[contains(@title,'Closing balance as of')]"), 'Closing balance label');
-        this.chartSelectedValue = UiElement.of(page.locator("xpath=//div[@id='banking-banking-balance-summary']//*[@class='tick-value selected']"), 'Chart selected value');
-        this.chartContainer = UiElement.of(page.locator("xpath=//div[@id='banking-banking-balance-summary']//div[@id='area-chart-container-0banking']"), 'Chart container');
+        this.balanceSummaryChart = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']"), 'Balance summary chart');
+        this.closingBalanceLabel = UiElement.of(page.locator("xpath=//div[contains(text(),'Closing balance as of')]"), 'Closing balance label');
+        this.chartSelectedValue = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']//*[@class='tick-value selected']"), 'Chart selected value');
+        this.chartContainer = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']//div[@id='area-chart-container-0banking']"), 'Chart container');
         this.datePickerInput = UiElement.of(page.locator("xpath=//input[@id='date']"), 'Date picker input');
         this.datePickerDropdown = UiElement.of(page.locator("xpath=//div[contains(@class,'datePicker__Dropdown')]") , 'Date picker dropdown');
         this.datePickerPreviousMonthButton = UiElement.of(page.locator("xpath=//button[@aria-label='Go to the Previous Month']"), 'Date picker previous month button');
         this.datePickerNextMonthButton = UiElement.of(page.locator("xpath=//button[@aria-label='Go to the Next Month']"), 'Date picker next month button');
         this.datePickerDay10Cell = UiElement.of(page.locator("xpath=//button[@class='rdp-day_button' and text()='10']"), 'Date picker day 10 cell');
         this.topOutboundCashDestinationsCheck = UiElement.of(page.locator("xpath=//div[@id='barhorizontal-chart-container-1banking']//*[contains(text(), 'CHECK')]"), 'Top outbound cash destinations check');
-
+        this.tileLoadSpiner = UiElement.of(page.locator("xpath=//*[text()='Loading, please wait.']"), 'Loading, please wait spinner');
     }
 }
