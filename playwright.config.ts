@@ -138,7 +138,7 @@ export default defineConfig({
    baseURL: baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+    acceptDownloads: true,
 
   },
 

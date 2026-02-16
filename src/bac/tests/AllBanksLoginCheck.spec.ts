@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import * as allure from 'allure-js-commons';
 import { LoginPage } from '../pages/loginPage';
 import { HomePage } from '../pages/homepage';
 import { AccountsCanvas } from '../pages/accountsCanvas';
@@ -16,23 +15,23 @@ test('Verify Login pages', async ({ page }) => {
   const accountsCanvas = new AccountsCanvas(page);
   await loginPage.navigate();
   await loginPage.login(login.boa.username, login.boa.password);
-  await allure.step(`Verify page title is ${login.boa.homepageTitle}`, async () => {
+  await test.step(`Verify page title is ${login.boa.homepageTitle}`, async () => {
     await expect(page).toHaveTitle(login.boa.homepageTitle);
   });
   await actions.clickElement(homePage.accountsHeaderButton);
   for (const bank of bankslist) {
     await test.step(`Verifying login page for ${bank.bank}`, async () => {
       const bankButton = accountsCanvas.getBankByName(bank.bank);
-      await allure.step(`Verify bank button ${bank.bank} is visible`, async () => {
+      await test.step(`Verify bank button ${bank.bank} is visible`, async () => {
         await expect.soft(bankButton.locator).toBeVisible();
       });
-      await allure.step(`Verify bank button ${bank.bank} is enabled`, async () => {
+      await test.step(`Verify bank button ${bank.bank} is enabled`, async () => {
         await expect.soft(bankButton.locator).toBeEnabled();
       });
       await sleep(1000); // short sleep to avoid click interception
       await actions.clickElement(bankButton);
       await page.waitForLoadState('networkidle');
-      await allure.step(`Verify bank header title is ${bank.bank}`, async () => {
+      await test.step(`Verify bank header title is ${bank.bank}`, async () => {
         await expect.soft(accountsCanvas.bankHeaderTitle.locator).toHaveText(bank.bank);
       });
       await accountsCanvas.termsAndConditionsCheckbox.locator.check();
@@ -43,7 +42,7 @@ test('Verify Login pages', async ({ page }) => {
       //await expect.soft(page).toHaveTitle(bank.loginPageTitle, { timeout: 10000 });
       // verify login page username field is visible
       const usernameLocator = await loginPage.getBankLoginUsername(bank.bank);
-      await allure.step(`Verify username locator for ${bank.bank} is visible`, async () => {
+      await test.step(`Verify username locator for ${bank.bank} is visible`, async () => {
         await expect.soft(usernameLocator.locator).toBeVisible({ timeout: 10000 });
       });
       await sleep(1000);
@@ -64,7 +63,7 @@ test('Verify Login pages', async ({ page }) => {
         attempts++;
       }
       //wait for accounts offcanvas to be visible
-      await allure.step('Accounts offcanvas title is visible', async () => {
+      await test.step('Accounts offcanvas title is visible', async () => {
         await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
       });
       //wait for accounts offcanvas to be fully loaded
@@ -72,14 +71,14 @@ test('Verify Login pages', async ({ page }) => {
       //click on cancel button
       await actions.clickElement(accountsCanvas.canvasCancelButton);
       await page.waitForLoadState('networkidle');
-      await allure.step('Accounts offcanvas title is visible after cancel', async () => {
+      await test.step('Accounts offcanvas title is visible after cancel', async () => {
         await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
       });
     });
   }
 
   await actions.clickElement(accountsCanvas.accountsCanvasCloseButton);
-  await allure.step('Accounts offcanvas title is not visible after close', async () => {
+  await test.step('Accounts offcanvas title is not visible after close', async () => {
     await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).not.toBeVisible();
   });
 });

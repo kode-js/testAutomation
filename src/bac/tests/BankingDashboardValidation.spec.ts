@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import * as allure from 'allure-js-commons';
 import { LoginPage } from '../pages/loginPage';
 import { HomePage } from '../pages/homepage';
 import { MikomiPage } from '../pages/mikomiConnection';
@@ -18,7 +17,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   const cashDestCanvas = new TopOutboundCashDestCanvas(page);
   await loginPage.navigate();
   await loginPage.login(login.boa.username, login.boa.password);
-  await allure.step(`Verify page title is ${login.boa.homepageTitle}`, async () => {
+  await test.step(`Verify page title is ${login.boa.homepageTitle}`, async () => {
     await expect.soft(page).toHaveTitle(login.boa.homepageTitle);
   });
 
@@ -57,14 +56,14 @@ test('Banking Dashboard Validation', async ({ page }) => {
 
     await actions.clickElement(miPage.accountsApproveButton);
     //close button to be visible
-    await allure.step('Accounts canvas close button is visible', async () => {
-      await allure.step('Verify accounts canvas close button visibility', async () => {
+    await test.step('Accounts canvas close button is visible', async () => {
+      await test.step('Verify accounts canvas close button visibility', async () => {
         await expect.soft(accountsCanvas.accountsCanvasCloseButton.locator).toBeVisible();
       });
     });
     //loading spinner to be visible and then hidden
-    await allure.step('Loading spinner appears then hides', async () => {
-      await allure.step('Verify loading spinner visibility and hidden state', async () => {
+    await test.step('Loading spinner appears then hides', async () => {
+      await test.step('Verify loading spinner visibility and hidden state', async () => {
         await expect.soft(miPage.loadingSpinner.locator).toBeVisible();
         await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
       });
@@ -81,7 +80,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   //wait for 1 second
   await sleep(1000);
   //verify closing balance label is visible
-  await allure.step('Closing balance label is visible', async () => {
+  await test.step('Closing balance label is visible', async () => {
     await expect.soft(homePage.closingBalanceLabel.locator).toBeVisible();
     await test.info().attach(`screenshot- Balance Summary Chart`, {
       body: await page.screenshot(),
@@ -95,7 +94,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
 
   //verify that current balance date is equal to chart selected value text chartSelectedValue
   const tickValue = await homePage.chartSelectedValue.locator.textContent();
-  await allure.step('Chart selected value equals closing balance date', async () => {
+  await test.step('Chart selected value equals closing balance date', async () => {
     expect.soft(tickValue).toBe(currentBalanceDate);
   });
 
@@ -109,7 +108,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   await actions.clickElement(homePage.datePickerDay10Cell);
   await page.waitForLoadState('networkidle');
 
-  await allure.step('Expect Top Outbound Cash Destinations to be Loaded', async () => {
+  await test.step('Expect Top Outbound Cash Destinations to be Loaded', async () => {
     await expect(homePage.topOutboundCashSourcesTile.locator).toBeVisible();
   });
 
@@ -118,19 +117,19 @@ test('Banking Dashboard Validation', async ({ page }) => {
   await sleep(2000);
   //loading spinner to be visible and then hidden
   //await expect.soft(miPage.loadingSpinner).toBeVisible();
-  await allure.step('Loading spinner hidden after fetching outbound cash destinations', async () => {
+  await test.step('Loading spinner hidden after fetching outbound cash destinations', async () => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });
   //click on check expand button
   await actions.clickElement(cashDestCanvas.checkExpand);
   await sleep(2000);
-  await allure.step('Loading spinner hidden after expand', async () => {
+  await test.step('Loading spinner hidden after expand', async () => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });
 
   await actions.clickElement(cashDestCanvas.checkCollapse);
   await sleep(2000);
-  await allure.step('Loading spinner hidden after collapse', async () => {
+  await test.step('Loading spinner hidden after collapse', async () => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });
   await actions.clickElement(cashDestCanvas.cardMemberExpand);
@@ -157,7 +156,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
     subTotal += amount;
   }
   console.log('Sum of Sub Transactions: ', subTotal);
-  await allure.step('Sum of sub transactions equals total amount', async () => {
+  await test.step('Sum of sub transactions equals total amount', async () => {
     await expect.soft(subTotal).toBeCloseTo(totalAmount, 2);
   });
 
@@ -167,7 +166,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   await actions.clickElement(accountsCanvas.confirmRemoveButton);
   await page.waitForLoadState('networkidle');
-  await allure.step(`Bank ${bankName} is visible in popular banks`, async () => {
+  await test.step(`Bank ${bankName} is visible in popular banks`, async () => {
     await expect.soft(accountsCanvas.getBankByName(bankName).locator).toBeVisible();
   });
   await test.info().attach(`screenshot- Removed Connection`, {
