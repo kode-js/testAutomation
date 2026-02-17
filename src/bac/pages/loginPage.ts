@@ -48,7 +48,7 @@ export class LoginPage {
             case 'Capital One':
                 return UiElement.of(this.page.locator("//input[@id='usernameInputField']"), `Capital One username input`);
             case 'Citibank':
-                return UiElement.of(this.page.locator("//input[@id='userid_input_mask']"), `Citibank username input`);
+                return UiElement.of(this.page.locator("//input[@formcontrolname='userName']"), `Citibank username input`);
             case 'Citizens':
                 return UiElement.of(this.page.locator("//input[@id='form-user-id']"), `Citizens username input`);
             case 'JPMorgan Chase':

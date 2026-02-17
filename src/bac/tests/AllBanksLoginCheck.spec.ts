@@ -5,7 +5,6 @@ import { AccountsCanvas } from '../pages/accountsCanvas';
 import { sleep } from '../../utils/utils';
 import bankslist from '../testdata/banks.json' assert { type: 'json' };
 import login from '../testdata/login.json' assert { type: 'json' };
-import { UiElement } from '../../utils/UiElement';
 import * as actions from '../../utils/actions';
 
 
@@ -19,6 +18,12 @@ test('Verify Login pages', async ({ page }) => {
     await expect(page).toHaveTitle(login.boa.homepageTitle);
   });
   await actions.clickElement(homePage.accountsHeaderButton);
+
+  if (await accountsCanvas.removeButtonByBankName('Akoya Mikomo bank').locator.isVisible()) {
+    await actions.clickElement(accountsCanvas.removeButtonByBankName('Akoya Mikomo bank'));
+    await actions.clickElement(accountsCanvas.confirmRemoveButton);
+  }
+
   for (const bank of bankslist) {
     await test.step(`Verifying login page for ${bank.bank}`, async () => {
       const bankButton = accountsCanvas.getBankByName(bank.bank);
@@ -30,20 +35,14 @@ test('Verify Login pages', async ({ page }) => {
       });
       await sleep(1000); // short sleep to avoid click interception
       await actions.clickElement(bankButton);
-      await page.waitForLoadState('networkidle');
       await test.step(`Verify bank header title is ${bank.bank}`, async () => {
         await expect.soft(accountsCanvas.bankHeaderTitle.locator).toHaveText(bank.bank);
       });
       await accountsCanvas.termsAndConditionsCheckbox.locator.check();
-      await page.waitForLoadState('networkidle');
       await actions.clickElement(accountsCanvas.proceedButton);
-      await page.waitForLoadState('networkidle');
-      // verify login page title
-      //await expect.soft(page).toHaveTitle(bank.loginPageTitle, { timeout: 10000 });
-      // verify login page username field is visible
       const usernameLocator = await loginPage.getBankLoginUsername(bank.bank);
       await test.step(`Verify username locator for ${bank.bank} is visible`, async () => {
-        await expect.soft(usernameLocator.locator).toBeVisible({ timeout: 10000 });
+        await expect.soft(usernameLocator.locator).toBeVisible({ timeout: 30000 });
       });
       await sleep(1000);
       //add screenshot to html report
@@ -54,12 +53,12 @@ test('Verify Login pages', async ({ page }) => {
       //click browser back button until title is 'Bank of America | Online Banking | Connected Apps' using for loop max 5 times to avoid infinite loop
       let attempts = 0;
       while (attempts < 5) {
+        await sleep(1000);
         if (await page.title() === 'Bank of America | Online Banking | Connected Apps') {
           break;
         }
         await page.goBack();
         await sleep(1000);
-        await page.waitForLoadState('networkidle');
         attempts++;
       }
       //wait for accounts offcanvas to be visible
@@ -67,10 +66,8 @@ test('Verify Login pages', async ({ page }) => {
         await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
       });
       //wait for accounts offcanvas to be fully loaded
-      await page.waitForLoadState('networkidle');
       //click on cancel button
       await actions.clickElement(accountsCanvas.canvasCancelButton);
-      await page.waitForLoadState('networkidle');
       await test.step('Accounts offcanvas title is visible after cancel', async () => {
         await expect.soft(accountsCanvas.accontsOffcanvasTitle.locator).toBeVisible();
       });
