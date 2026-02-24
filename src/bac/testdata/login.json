@@ -5,6 +5,12 @@
         "password": "First@1234",
         "homepageTitle": "Bank of America | Online Banking | Connected Apps"
     },
+    "boa_demo": {
+        "name": "Bank of America",
+        "username": "demo@9spokes.com",
+        "password": "9Spokes9!",
+        "homepageTitle": "Bank of America | Online Banking | Connected Apps"
+    },
     "amb": {
         "name": "Akoya Mikomo bank",
         "username": "mikomo_2023",

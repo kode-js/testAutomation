@@ -18,3 +18,12 @@ export async function enterText(element: UiElement, value: string) {
         });
     }
 }
+
+//Export function to scrollable element like $x("//div[@id='Stan Howard']//div[contains(@style,'scroll')]")[0].scrollBy(0,1000)
+export async function scrollElementDown(element: UiElement) {
+    //await test.step(`Scrolling down element: ${element.description}`, async () => {
+        await element.locator.evaluate((el) => {
+            el.scrollBy(0, 1000);
+        });
+    //});
+}

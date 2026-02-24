@@ -39,6 +39,8 @@ export class HomePage {
     readonly chartContainer: UiElement;
 
     readonly topOutboundCashDestinationsCheck: UiElement;
+    readonly topOutboundCashDestinationsFirstTick: UiElement;
+    readonly topOutboundCashDestinationsSecondTick: UiElement;
 
     readonly tileLoadSpiner: UiElement;
 
@@ -74,6 +76,8 @@ export class HomePage {
         this.datePickerNextMonthButton = UiElement.of(page.locator("xpath=//button[@aria-label='Go to the Next Month']"), 'Date picker next month button');
         this.datePickerDay10Cell = UiElement.of(page.locator("xpath=//button[@class='rdp-day_button' and text()='10']"), 'Date picker day 10 cell');
         this.topOutboundCashDestinationsCheck = UiElement.of(page.locator("xpath=//div[@id='barhorizontal-chart-container-1banking']//*[contains(text(), 'CHECK')]"), 'Top outbound cash destinations check');
+        this.topOutboundCashDestinationsFirstTick = UiElement.of(page.locator("xpath=//div[@id='barhorizontal-chart-container-1banking']//*[contains(@class,'tick-value')][1]"), 'Top outbound cash destinations first tick');
+        this.topOutboundCashDestinationsSecondTick = UiElement.of(page.locator("xpath=//div[@id='barhorizontal-chart-container-1banking']//*[contains(@class,'tick-value')][2]"), 'Top outbound cash destinations second tick');
         this.tileLoadSpiner = UiElement.of(page.locator("xpath=//*[text()='Loading, please wait.']"), 'Loading, please wait spinner');
     }
 }
