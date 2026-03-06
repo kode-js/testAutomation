@@ -107,7 +107,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   const totalAmount = parseFloat(firstTickTotalText?.replace('$', '').replace(',', '') || '0');
 
   //get all sub transaction amounts and sum them up
-  
+
   // const subTransactionAmounts = await cashDestCanvas.checkSubTransactions.locator.allTextContents();
   // let subTotal = 0;
   // for (const amountText of subTransactionAmounts) {
@@ -138,7 +138,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
       await actions.scrollElementDown(subTransactionsCanvas);
       await sleep(3000);
     }
-    
+
   } while (currentCount > previousCount);
 
   console.log('Final count of sub transactions: ', currentCount);

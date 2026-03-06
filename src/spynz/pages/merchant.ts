@@ -12,6 +12,11 @@ export class MerchantPage {
     readonly quickViewTile_TotalRefunds: UiElement;
     readonly quickViewTile_BusiestTradingDay: UiElement;
     readonly chartTile_NetSales: UiElement;
+    readonly chart_NetSales: UiElement;
+    readonly netSalesLabel: UiElement;
+    readonly previousYearNetSalesLabel: UiElement;
+    readonly netsalesSelectedChartValue: UiElement;
+
     readonly chartTile_Transactions: UiElement;
     readonly button_chartTile_Transactions_Filters: UiElement;
     readonly button_chartTile_Transactions_ExportToCSV: UiElement;
@@ -63,26 +68,31 @@ export class MerchantPage {
         this.quickViewTile_TotalRefunds = UiElement.of(page.locator("xpath=//div[contains(@class,'quickview__tile') and .//div[text()='Total refunds']]"), 'Total refunds tile');
         this.quickViewTile_BusiestTradingDay = UiElement.of(page.locator("xpath=//div[contains(@class,'quickview__tile') and .//div[text()='Busiest trading day']]"), 'Busiest trading day tile');
         this.chartTile_NetSales = UiElement.of(page.locator("xpath=//div[contains(@class,'chart-tile') and .//span[text()='Net sales']]"), 'Net sales chart tile');
-        this.chartTile_Transactions = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]"), 'Transactions chart tile');
-        this.button_chartTile_Transactions_Filters = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Filters']]"), 'Transactions filters button');
-        this.button_chartTile_Transactions_ExportToCSV = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//button[.//span[text()='Export to CSV']]"), 'Transactions export to CSV button');
-        this.columnHeader_chartTile_Transactions_DateTime = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Date/Time']"), 'Transactions date/time header');
-        this.columnHeader_chartTile_Transactions_Amount = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Amount']"), 'Transactions amount header');
-        this.columnHeader_chartTile_Transactions_TransactionType = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Transaction type']"), 'Transactions type header');
-        this.columnHeader_chartTile_Transactions_CardType = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Card type']"), 'Transactions card type header');
-        this.columnHeader_chartTile_Transactions_PaymentStatus = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Payment status']"), 'Transactions payment status header');
-        this.columnHeader_chartTile_Transactions_Details = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Transactions']]//li[text()='Details']"), 'Transactions details header');
+        this.chart_NetSales = UiElement.of(this.chartTile_NetSales.locator.locator("xpath=//div[@id='merchant-net-sales']"), 'Net sales chart');
+        this.netSalesLabel = UiElement.of(page.locator("xpath=//div[starts-with(text(),'Net sales, on')]"), 'Net sales label');
+        this.previousYearNetSalesLabel = UiElement.of(page.locator("xpath=//div[starts-with(text(),'Previous year net sales, on')]"), 'Previous year net sales label');
+        this.netsalesSelectedChartValue = UiElement.of(page.locator("xpath=//div[@id='merchant-net-sales']//*[@class='tick-value selected']"), 'Net sales selected chart value');
+        
+        this.chartTile_Transactions = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]"), 'Transactions chart tile');
+        this.button_chartTile_Transactions_Filters = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//button[.//span[text()='Filters']]"), 'Transactions filters button');
+        this.button_chartTile_Transactions_ExportToCSV = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//button[.//span[text()='Export to CSV']]"), 'Transactions export to CSV button');
+        this.columnHeader_chartTile_Transactions_DateTime = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Date/Time']"), 'Transactions date/time header');
+        this.columnHeader_chartTile_Transactions_Amount = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Amount']"), 'Transactions amount header');
+        this.columnHeader_chartTile_Transactions_TransactionType = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Transaction type']"), 'Transactions type header');
+        this.columnHeader_chartTile_Transactions_CardType = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Card type']"), 'Transactions card type header');
+        this.columnHeader_chartTile_Transactions_PaymentStatus = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Payment status']"), 'Transactions payment status header');
+        this.columnHeader_chartTile_Transactions_Details = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Transactions']]//li[text()='Details']"), 'Transactions details header');
 
-        this.chartTile_Settlements = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]"), 'Settlements chart tile');
-        this.button_chartTile_Settlements_Filters = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Filters']]"), 'Settlements filters button');
-        this.button_chartTile_Settlements_ExportToCSV = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//button[.//span[text()='Export to CSV']]"), 'Settlements export to CSV button');
-        this.columnHeader_chartTile_Settlements_Date = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Date']"), 'Settlements date header');
-        this.columnHeader_chartTile_Settlements_SettlementAmount = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Settlement amount']"), 'Settlements amount header');
-        this.columnHeader_chartTile_Settlements_NoOfTransactions = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='No. transactions']"), 'Settlements no. transactions header');
-        this.columnHeader_chartTile_Settlements_DepositNo = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Deposit no.']"), 'Settlements deposit no header');
-        this.columnHeader_chartTile_Settlements_Details = UiElement.of(page.locator("xpath=//div[contains(@class,'merchant-container') and .//span[text()='Settlements']]//li[text()='Details']"), 'Settlements details header');
+        this.chartTile_Settlements = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]"), 'Settlements chart tile');
+        this.button_chartTile_Settlements_Filters = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//button[.//span[text()='Filters']]"), 'Settlements filters button');
+        this.button_chartTile_Settlements_ExportToCSV = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//button[.//span[text()='Export to CSV']]"), 'Settlements export to CSV button');
+        this.columnHeader_chartTile_Settlements_Date = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//li[text()='Date']"), 'Settlements date header');
+        this.columnHeader_chartTile_Settlements_SettlementAmount = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//li[text()='Settlement amount']"), 'Settlements amount header');
+        this.columnHeader_chartTile_Settlements_NoOfTransactions = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//li[text()='No. transactions']"), 'Settlements no. transactions header');
+        this.columnHeader_chartTile_Settlements_DepositNo = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//li[text()='Deposit no.']"), 'Settlements deposit no header');
+        this.columnHeader_chartTile_Settlements_Details = UiElement.of(page.locator("xpath=//div[contains(@class,'merchantContainer') and .//span[text()='Settlements']]//li[text()='Details']"), 'Settlements details header');
 
-        this.settlementsTable_FirstDepositNo = UiElement.of(page.locator("xpath=(//div[@class='depositNo']//div[@class='mobile-value'])[1]"), 'First deposit number');
+        this.settlementsTable_FirstDepositNo = UiElement.of(page.locator("xpath=(//div[@class='depositNo']//div[@class='mobileValue'])[1]"), 'First deposit number');
         this.findDeposites = UiElement.of(page.locator("//div[text()='Find deposit no.']"), 'Find deposits');
         this.viewResultsButton = UiElement.of(page.locator("//div[text()='View results']"), 'View results button');
 
@@ -91,12 +101,12 @@ export class MerchantPage {
         this.viewTransactionDetailsButton = UiElement.of(page.locator("xpath=//div[@class='details' and .//span[text()='View details']]"), 'View transaction details');
         this.filteredSettlementDate = UiElement.of(page.locator("xpath=(//div[@class='date'])[1]"), 'Filtered settlement date');
         this.filteredSettlementAmount = UiElement.of(page.locator("xpath=(//div[@class='amount']//div[@class='value'])[1]"), 'Filtered settlement amount');
-        this.filteredNoOfTransactions = UiElement.of(page.locator("xpath=(//div[@class='numTransactions'])[1]//div[@class='mobile-value']"), 'Filtered number of transactions');
+        this.filteredNoOfTransactions = UiElement.of(page.locator("xpath=(//div[@class='numTransactions'])[1]//div[@class='mobileValue']"), 'Filtered number of transactions');
         
         this.detailsSettlementDate = UiElement.of(page.locator("xpath=//h3[text()='Settlement date']/following-sibling::p[1]"), 'Details settlement date');
         this.detailsSettlementAmount = UiElement.of(page.locator("xpath=//h3[text()='Total Settlement Amount']/following-sibling::p[1]"), 'Details settlement amount');
         this.detailsNoOfTransactions = UiElement.of(page.locator("xpath=//h3[text()='No. of transactions']/following-sibling::p[1]"), 'Details no of transactions');
-        this.allTransactionRows = UiElement.of(page.locator("div.simplebar-content div div.merchant-row"), 'All transaction rows');
+        this.allTransactionRows = UiElement.of(page.locator("//div[@class='simplebar-content']//div//div[@class='merchantContainer__row' and @data-testid]"), 'All transaction rows');
         this.allTransactionAmounts = UiElement.of(this.allTransactionRows.locator.locator("div.amount div.value"), 'All transaction amounts');
 
     }

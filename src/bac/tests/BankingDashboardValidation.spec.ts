@@ -98,6 +98,31 @@ test('Banking Dashboard Validation', async ({ page }) => {
     expect.soft(tickValue).toBe(currentBalanceDate);
   });
 
+  // Slide mouse to left until the tick value changes and verify closing balance label updates
+  let attempts = 0;
+  let mousehoverSuccess = false;
+  while (attempts < 5) {
+    await homePage.balanceSummaryChart.locator.hover({ position: { x: 10, y: 100 } });
+    await sleep(1000);
+    const newTickValue = await homePage.chartSelectedValue.locator.textContent();
+    if (newTickValue !== tickValue) {
+      await test.step('Closing balance label should update with new hovered chart date', async () => {
+        const newClosingBalanceText = await homePage.closingBalanceLabel.locator.textContent();
+        expect.soft(newClosingBalanceText?.trim().endsWith(newTickValue?.trim() || '')).toBeTruthy();
+      });
+      await test.info().attach(`screenshot- Balance Summary Chart Hover Updated`, {
+        body: await page.screenshot(),
+        contentType: 'image/png',
+      });
+      mousehoverSuccess = true;
+      break;
+    }
+    attempts++;
+  }
+  if (!mousehoverSuccess) {
+    test.fail(true, 'Mouse hover on Balance Summary chart did not update tick value after multiple attempts');
+  }
+
   //Navigate to date picker and go to 12 months back and select 10th day
   await actions.clickElement(homePage.datePickerInput);
   await expect.soft(homePage.datePickerDropdown.locator).toBeVisible();

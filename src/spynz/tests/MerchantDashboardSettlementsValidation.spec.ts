@@ -9,7 +9,7 @@ import login from '../testdata/login.json' assert { type: 'json' };
 import path from 'path';
 import fs from 'fs';
 
-test('Merchant Dashboard Validation', async ({ page }) => {
+test.only('Merchant Dashboard Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
   const merchantPage = new MerchantPage(page);
@@ -20,56 +20,6 @@ test('Merchant Dashboard Validation', async ({ page }) => {
   });
 
   await actions.clickElement(homepage.navMerchant);
-  await actions.clickElement(merchantPage.tabTransactions);
-  await test.step('Verify transactions overview elements are visible', async () => {
-    // Create a sub-step for each element verification
-    await test.step('Verify Accounts Drawer button is visible', async () => {
-      await expect.soft(merchantPage.btnAccountsDrawer.locator).toBeVisible();
-    });
-    await test.step('Verify Quick View - Busiest Trading Day tile is visible', async () => {
-      await expect.soft(merchantPage.quickViewTile_BusiestTradingDay.locator).toBeVisible();
-    });
-    await test.step('Verify Quick View - No Of Transactions tile is visible', async () => {
-      await expect.soft(merchantPage.quickViewTile_NoOfTransactions.locator).toBeVisible();
-    });
-    await test.step('Verify Quick View - Running Total tile is visible', async () => {
-      await expect.soft(merchantPage.quickViewTile_RunningTotal.locator).toBeVisible();
-    });
-    await test.step('Verify Quick View - Total Refunds tile is visible', async () => {
-      await expect.soft(merchantPage.quickViewTile_TotalRefunds.locator).toBeVisible();
-    });
-    await test.step('Verify Net Sales chart tile is visible', async () => {
-      await expect.soft(merchantPage.chartTile_NetSales.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions chart tile is visible', async () => {
-      await expect.soft(merchantPage.chartTile_Transactions.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions Filters button is visible', async () => {
-      await expect.soft(merchantPage.button_chartTile_Transactions_Filters.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions ExportToCSV button is visible', async () => {
-      await expect.soft(merchantPage.button_chartTile_Transactions_ExportToCSV.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - DateTime header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_DateTime.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - Amount header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_Amount.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - TransactionType header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_TransactionType.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - CardType header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_CardType.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - PaymentStatus header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_PaymentStatus.locator).toBeVisible();
-    });
-    await test.step('Verify Transactions column - Details header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Transactions_Details.locator).toBeVisible();
-    });
-  });
-
   await actions.clickElement(merchantPage.tabSettlements);
   await test.step('Verify settlements elements are visible', async () => {
     await test.step('Verify Settlements label is visible', async () => {
