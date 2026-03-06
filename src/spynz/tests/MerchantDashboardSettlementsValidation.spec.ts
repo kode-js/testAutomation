@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import * as allure from 'allure-js-commons';
 import { LoginPage } from '../pages/loginPage';
-import { MerchantPage } from '../pages/merchant';
+import { MerchantSettlementsPage } from '../pages/merchantSettlements';
 import { HomePage } from '../pages/homepage';
 import { sleep } from '../../utils/utils';
 import * as actions from '../../utils/actions';
@@ -12,7 +12,7 @@ import fs from 'fs';
 test.only('Merchant Dashboard Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
-  const merchantPage = new MerchantPage(page);
+  const settlementsPage = new MerchantSettlementsPage(page);
   await loginPage.navigate();
   await loginPage.login(login.spynz.username, login.spynz.password);
   await test.step(`Verify page title is ${login.spynz.homepageTitle}`, async () => {
@@ -20,55 +20,55 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
   });
 
   await actions.clickElement(homepage.navMerchant);
-  await actions.clickElement(merchantPage.tabSettlements);
+  await actions.clickElement(settlementsPage.tabSettlements);
   await test.step('Verify settlements elements are visible', async () => {
     await test.step('Verify Settlements label is visible', async () => {
-      await expect.soft(merchantPage.labelSettlements.locator).toBeVisible();
+      await expect.soft(settlementsPage.labelSettlements.locator).toBeVisible();
     });
     await test.step('Verify Settlements chart tile is visible', async () => {
-      await expect.soft(merchantPage.chartTile_Settlements.locator).toBeVisible();
+      await expect.soft(settlementsPage.chartTile_Settlements.locator).toBeVisible();
     });
     await test.step('Verify Settlements Filters button is visible', async () => {
-      await expect.soft(merchantPage.button_chartTile_Settlements_Filters.locator).toBeVisible();
+      await expect.soft(settlementsPage.button_chartTile_Settlements_Filters.locator).toBeVisible();
     });
     await test.step('Verify Settlements ExportToCSV button is visible', async () => {
-      await expect.soft(merchantPage.button_chartTile_Settlements_ExportToCSV.locator).toBeVisible();
+      await expect.soft(settlementsPage.button_chartTile_Settlements_ExportToCSV.locator).toBeVisible();
     });
     await test.step('Verify Settlements column - Date header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Settlements_Date.locator).toBeVisible();
+      await expect.soft(settlementsPage.columnHeader_chartTile_Settlements_Date.locator).toBeVisible();
     });
     await test.step('Verify Settlements column - SettlementAmount header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Settlements_SettlementAmount.locator).toBeVisible();
+      await expect.soft(settlementsPage.columnHeader_chartTile_Settlements_SettlementAmount.locator).toBeVisible();
     });
     await test.step('Verify Settlements column - NoOfTransactions header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Settlements_NoOfTransactions.locator).toBeVisible();
+      await expect.soft(settlementsPage.columnHeader_chartTile_Settlements_NoOfTransactions.locator).toBeVisible();
     });
     await test.step('Verify Settlements column - DepositNo header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Settlements_DepositNo.locator).toBeVisible();
+      await expect.soft(settlementsPage.columnHeader_chartTile_Settlements_DepositNo.locator).toBeVisible();
     });
     await test.step('Verify Settlements column - Details header is visible', async () => {
-      await expect.soft(merchantPage.columnHeader_chartTile_Settlements_Details.locator).toBeVisible();
+      await expect.soft(settlementsPage.columnHeader_chartTile_Settlements_Details.locator).toBeVisible();
     });
   });
 
-  let firstDepositeNumber = await merchantPage.settlementsTable_FirstDepositNo.locator.innerText();
-  await actions.clickElement(merchantPage.button_chartTile_Settlements_Filters);
-  await actions.clickElement(merchantPage.findDeposites);
-  await actions.clickElement(merchantPage.getDespositeByNumber(firstDepositeNumber));
+  let firstDepositeNumber = await settlementsPage.settlementsTable_FirstDepositNo.locator.innerText();
+  await actions.clickElement(settlementsPage.button_chartTile_Settlements_Filters);
+  await actions.clickElement(settlementsPage.findDeposites);
+  await actions.clickElement(settlementsPage.getDespositeByNumber(firstDepositeNumber));
   await page.waitForLoadState('networkidle');
-  await actions.clickElement(merchantPage.viewResultsButton);
+  await actions.clickElement(settlementsPage.viewResultsButton);
   await page.waitForLoadState('networkidle');
   await test.step('Verify first deposit number matches', async () => {
-    await expect.soft(merchantPage.settlementsTable_FirstDepositNo.locator).toHaveText(firstDepositeNumber);
+    await expect.soft(settlementsPage.settlementsTable_FirstDepositNo.locator).toHaveText(firstDepositeNumber);
   });
 
-  let settlementsDate = await merchantPage.filteredSettlementDate.locator.textContent();
-  let settlementAmount = await merchantPage.filteredSettlementAmount.locator.textContent() as string;
-  let noOfTransactions = await merchantPage.filteredNoOfTransactions.locator.textContent() as string;
+  let settlementsDate = await settlementsPage.filteredSettlementDate.locator.textContent();
+  let settlementAmount = await settlementsPage.filteredSettlementAmount.locator.textContent() as string;
+  let noOfTransactions = await settlementsPage.filteredNoOfTransactions.locator.textContent() as string;
 
-  await actions.clickElement(merchantPage.button_chartTile_Settlements_ExportToCSV);
+  await actions.clickElement(settlementsPage.button_chartTile_Settlements_ExportToCSV);
   await page.waitForLoadState('networkidle');
-  //await actions.clickElement(merchantPage.exportToCSVButton);
+  //await actions.clickElement(settlementsPage.exportToCSVButton);
 
   const downloadsDir = path.join(process.cwd(), 'downloads');
   if (!fs.existsSync(downloadsDir)) {
@@ -77,7 +77,7 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
 
   const [download] = await Promise.all([
     page.waitForEvent('download'),
-    await actions.clickElement(merchantPage.exportToCSVButton)
+    await actions.clickElement(settlementsPage.exportToCSVButton)
   ]);
 
   const timestamp = Date.now();
@@ -128,14 +128,14 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
   });
 
   await page.waitForLoadState('networkidle');
-  await actions.clickElement(merchantPage.closeButton);
+  await actions.clickElement(settlementsPage.closeButton);
 
-  await actions.clickElement(merchantPage.viewTransactionDetailsButton);
+  await actions.clickElement(settlementsPage.viewTransactionDetailsButton);
   await page.waitForLoadState('networkidle');
 
-  let detailsSettlementDate = await merchantPage.detailsSettlementDate.locator.textContent() as string;
-  let detailsSettlementAmount = await merchantPage.detailsSettlementAmount.locator.textContent() as string;
-  let detailsNoOfTransactions = await merchantPage.detailsNoOfTransactions.locator.textContent() as string;
+  let detailsSettlementDate = await settlementsPage.detailsSettlementDate.locator.textContent() as string;
+  let detailsSettlementAmount = await settlementsPage.detailsSettlementAmount.locator.textContent() as string;
+  let detailsNoOfTransactions = await settlementsPage.detailsNoOfTransactions.locator.textContent() as string;
 
   await test.step('Verify details match filtered values', async () => {
     await test.step('Verify settlement date matches filtered date', async () => {
@@ -152,12 +152,12 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
   //wait for 5 seconds to load all transactions
   await sleep(10000);
 
-  let detailsAllTransactionRows = await merchantPage.allTransactionRows.locator.count() as number;
+  let detailsAllTransactionRows = await settlementsPage.allTransactionRows.locator.count() as number;
   await test.step('Verify number of transactions matches', async () => {
     expect.soft(detailsAllTransactionRows).toBe(parseInt(noOfTransactions.replace(/,/g, '')));
   });
-  //await await expect.soft(merchantPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
-  const transactionAmounts = await merchantPage.allTransactionAmounts.locator.allTextContents();
+  //await await expect.soft(settlementsPage.allTransactionRows).toHaveCount(parseInt(noOfTransactions.replace(/,/g, '')));
+  const transactionAmounts = await settlementsPage.allTransactionAmounts.locator.allTextContents();
   //All transactions should total to settlement amount
   let totalAmount = 0;
   for (const amountText of transactionAmounts) {
