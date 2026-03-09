@@ -5,6 +5,7 @@ const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
 const channels = ['bac', 'spynz', 'nsp', 'vm', 'spyau'];
 const envs = ['uat', 'prod', 'dev'];
 
+// Read env vars but do not exit — keep discoverability for debug.
 let env = (process.env.ENV || '').trim();
 let channel = (process.env.CHANNEL || '').trim();
 
@@ -18,18 +19,19 @@ if (!channel) {
 }
 
 if (!channels.includes(channel)) {
-  console.error(`Invalid CHANNEL value. Expected one of: ${channels.join(', ')}`);
-  process.exit(1);
+  console.warn(`Invalid CHANNEL value: ${channel}. Falling back to 'bac'. Expected one of: ${channels.join(', ')}`);
+  channel = 'bac';
 }
 
 if (!envs.includes(env)) {
-  console.error(`Invalid ENV value. Expected one of: ${envs.join(', ')}`);
-  process.exit(1);
+  console.warn(`Invalid ENV value: ${env}. Falling back to 'uat'. Expected one of: ${envs.join(', ')}`);
+  env = 'uat';
 }
 
 // Set baseURL based on CHANNEL and ENV
 let baseURL = '';
-let testDir = '';
+// Make test discovery friendly for IDEs: include all src tests by default.
+let testDir = process.env.TEST_DIR || './src';
 if (channel === 'bac') {
   if (env === 'uat') {
     baseURL = 'https://bac-uat.9spokes.io';
@@ -44,9 +46,9 @@ else if (channel === 'spynz') {
   if (env === 'uat') {
     baseURL = 'https://spynz.app-uat.9spokes.dev';
   } else if (env === 'prod') {
-    baseURL = '';
+    baseURL = 'https://spynz.app-prd.9spokes.dev';
   } else if (env === 'dev') {
-    baseURL = '';
+    baseURL = 'https://spynz.app-dev.9spokes.dev';
   }
   testDir = `./src/spynz/tests`;
 }else if (channel === 'nsp') {
@@ -69,7 +71,7 @@ else if (channel === 'spynz') {
   testDir = `./src/vm/tests`;
 }else if (channel === 'spyau') {
   if (env === 'uat') {
-    baseURL = ' https://spyau.app-uat.9spokes.dev';
+    baseURL = 'https://spyau.app-uat.9spokes.dev';
   } else if (env === 'prod') {
     baseURL = '';
   } else if (env === 'dev') {
@@ -78,9 +80,8 @@ else if (channel === 'spynz') {
   testDir = `./src/spyau/tests`;
 }
 
-if(baseURL === '') {
-  console.error(`Base URL not defined for CHANNEL: ${channel} and ENV: ${env}`);
-  process.exit(1);
+if (baseURL === '') {
+  console.warn(`Base URL not defined for CHANNEL: ${channel} and ENV: ${env}. Tests will still be discoverable; set proper base URLs via env or config for full end-to-end runs.`);
 }
 
 console.log(`Running tests on ${channel} environment: ${env}`);
@@ -109,6 +110,7 @@ export default defineConfig({
   expect: {
     timeout: 30 * 1000, // Sets default expect timeout to 30 seconds
   },
+  // Use a broad testDir so IDE/Test Explorer can discover all suites for debugging.
   testDir: testDir,
   /* Run tests in files in parallel */
   fullyParallel: false,

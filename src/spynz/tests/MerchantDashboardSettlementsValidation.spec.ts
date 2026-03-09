@@ -9,7 +9,7 @@ import login from '../testdata/login.json' assert { type: 'json' };
 import path from 'path';
 import fs from 'fs';
 
-test.only('Merchant Dashboard Validation', async ({ page }) => {
+test('Merchant Dashboard Settlements Tab Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
   const settlementsPage = new MerchantSettlementsPage(page);

@@ -9,7 +9,7 @@ import login from '../testdata/login.json' assert { type: 'json' };
 import path from 'path';
 import fs from 'fs';
 
-test.only('Merchant Dashboard Validation', async ({ page }) => {
+test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
   const transactionsPage = new MerchantTransactionsPage(page);
@@ -83,7 +83,7 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
     // yearFromtickValue is last four characters of tick value
     let yearFromTickValue = tickValue?.slice(-4);
     let expectedPreviousYearNetValue = tickValue?.replace(yearFromTickValue || '', (parseInt(yearFromTickValue || '') - 1).toString() || '');
-    
+
     //verify closing balance label is visible
     await test.step('Net sales label should display hovered chart date', async () => {
       await expect.soft(transactionsPage.netSalesLabel.locator).toBeVisible();
@@ -94,7 +94,7 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
 
     await test.step('Previous year net sales label should display hovered chart date', async () => {
       await expect.soft(transactionsPage.previousYearNetSalesLabel.locator).toBeVisible();
-      const previousYearNetSalesLabelText = await transactionsPage.previousYearNetSalesLabel.locator.textContent(); 
+      const previousYearNetSalesLabelText = await transactionsPage.previousYearNetSalesLabel.locator.textContent();
       //previous year net sales label should end with the tick value which is the hovered date on chart
       expect.soft(previousYearNetSalesLabelText?.trim().endsWith(expectedPreviousYearNetValue?.trim() || '')).toBeTruthy();
     });
@@ -134,7 +134,255 @@ test.only('Merchant Dashboard Validation', async ({ page }) => {
     }
   });
 
-  test.step('Verify Transaction filters and export functionality', async () => {
-    
+  await test.step('Verify Transaction filters and export functionality', async () => {
+    // compute date range: from = 6 months before today (T00:00), to = today (T00:00)
+    const now = new Date();
+    const fromDate = new Date(now);
+    fromDate.setMonth(fromDate.getMonth() - 6);
+    const fmt = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}T00:00`;
+    };
+    const dateFromStr = fmt(fromDate);
+    const dateToStr = fmt(now);
+
+    const minAmount = '20';
+    const maxAmount = '100';
+
+    await test.step('Open filters panel', async () => {
+      await actions.clickElement(transactionsPage.button_chartTile_Transactions_Filters);
+    });
+
+    await test.step(`Set dateFrom to ${dateFromStr} and dateTo to ${dateToStr}`, async () => {
+      await actions.enterText(transactionsPage.dateFrom, dateFromStr);
+      await actions.enterText(transactionsPage.dateTo, dateToStr);
+    });
+
+    await test.step(`Set min amount ${minAmount} and max amount ${maxAmount}`, async () => {
+      await actions.enterText(transactionsPage.minAmout, minAmount);
+      await actions.enterText(transactionsPage.maxAmount, maxAmount);
+    });
+
+    await test.step('Select Visa and Mastercard card types', async () => {
+      await actions.clickElement(transactionsPage.cardType_visa);
+      await actions.clickElement(transactionsPage.cardType_mastercard);
+    });
+
+    await test.step('Select Approved payment status', async () => {
+      await actions.clickElement(transactionsPage.paymentStatus_approved);
+    });
+
+    await test.step('Apply filters (View results)', async () => {
+      await actions.clickElement(transactionsPage.viewResultsButton);
+      await sleep(5000); // wait for filters to apply and results to load, can be replaced with more robust wait condition if needed
+    });
+
+    await page.waitForLoadState('networkidle');
+
+    const firstResultDate = await transactionsPage.firstResultDate.locator.textContent();
+    const firstResultTime = await transactionsPage.firstResultTime.locator.textContent();
+    const firstResultAmount = await transactionsPage.firstResultAmount.locator.textContent();
+    const firstResultTransactionType = await transactionsPage.firstResultTransactionType.locator.textContent();
+    const firstResultCardType = await transactionsPage.firstResultCardType.locator.textContent();
+    const firstResultPaymentStatus = await transactionsPage.firstResultPaymentStatus.locator.textContent();
+
+    await actions.clickElement(transactionsPage.firstResultDetailsButton);
+
+    await test.step('Verify first transaction details match with applied filters', async () => {
+      //expected transaction date time ${firstResultDate} at ${firstResultTime}
+      const expectedDateTime = `${firstResultDate?.trim()} at ${firstResultTime?.trim()}`;
+      const actualDateTime = await transactionsPage.transaction_DateTime.locator.textContent();
+      await test.step(`Transaction date time should be ${expectedDateTime}`, async () => {
+        await test.info().attach('Expected Transaction DateTime', {
+          body: expectedDateTime,
+          contentType: 'text/plain',
+        });
+        await test.info().attach('Actual Transaction DateTime', {
+          body: actualDateTime?.trim() || '',
+          contentType: 'text/plain',
+        });
+        expect.soft(actualDateTime?.trim()).toBe(expectedDateTime);
+      });
+
+      const actualAmount = await transactionsPage.transaction_Amount.locator.textContent();
+      await test.step(`Transaction amount should be ${firstResultAmount?.trim()}`, async () => {
+        await test.info().attach('Expected Transaction Amount', {
+          body: firstResultAmount?.trim() || '',
+          contentType: 'text/plain',
+        });
+        await test.info().attach('Actual Transaction Amount', {
+          body: actualAmount?.trim() || '',
+          contentType: 'text/plain',
+        });
+        expect.soft(actualAmount?.trim()).toBe(firstResultAmount?.trim());
+      });
+
+      await test.step(`Transaction type should be ${firstResultTransactionType?.trim()}`, async () => {
+        const actualTransactionType = await transactionsPage.transaction_TransactionType.locator.textContent();
+        await test.info().attach('Expected Transaction Type', {
+          body: firstResultTransactionType?.trim() || '',
+          contentType: 'text/plain',
+        });
+        await test.info().attach('Actual Transaction Type', {
+          body: actualTransactionType?.trim() || '',
+          contentType: 'text/plain',
+        });
+        expect.soft(actualTransactionType?.trim()).toBe(firstResultTransactionType?.trim());
+      });
+
+      await test.step(`Card type should be ${firstResultCardType?.trim()}`, async () => {
+        const actualCardType = await transactionsPage.transaction_CardType.locator.textContent();
+        await test.info().attach('Expected Card Type', {
+          body: firstResultCardType?.trim() || '',
+          contentType: 'text/plain',
+        });
+        await test.info().attach('Actual Card Type', {
+          body: actualCardType?.trim() || '',
+          contentType: 'text/plain',
+        });
+        expect.soft(actualCardType?.trim()).toBe(firstResultCardType?.trim());
+      });
+
+      await test.step(`Payment status should be ${firstResultPaymentStatus?.trim()}`, async () => {
+        const actualPaymentStatus = await transactionsPage.transaction_PaymentStatus.locator.textContent();
+        await test.info().attach('Expected Payment Status', {
+          body: firstResultPaymentStatus?.trim() || '',
+          contentType: 'text/plain',
+        });
+        await test.info().attach('Actual Payment Status', {
+          body: actualPaymentStatus?.trim() || '',
+          contentType: 'text/plain',
+        });
+        expect.soft(actualPaymentStatus?.trim()).toBe(firstResultPaymentStatus?.trim());
+      });
+
+    });
+
+    await actions.clickElement(transactionsPage.details_CancelButton);
+
+    await test.step('Export transactions and verify downloaded file', async () => {
+      // Listen for the download event
+
+      const downloadsDir = path.join(process.cwd(), 'downloads');
+      if (!fs.existsSync(downloadsDir)) {
+        fs.mkdirSync(downloadsDir);
+      }
+
+      await actions.clickElement(transactionsPage.button_chartTile_Transactions_ExportToCSV);
+
+      const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        await actions.clickElement(transactionsPage.exportToCSVButton)
+      ]);
+
+      const timestamp = Date.now();
+      const filePath = path.join(downloadsDir, `${timestamp}.csv`);
+      //const filePath = test.info().outputPath(download.suggestedFilename());
+      await download.saveAs(filePath);
+
+      await test.step('Verify downloaded CSV file content matches filtered transaction data', async () => {
+        await test.info().attach('Downloaded CSV File', { path: filePath, contentType: 'text/csv' });
+        const csvContent = fs.readFileSync(filePath, 'utf-8');
+        /** Sample CSV content:
+         * 
+Date/Time	Amount	Currency	Card type	Payment status	Transaction type
+2025-11-24T08:29:58+05:30	50.65	NZD	visa (2577)	Approved	Purchase
+2025-11-24T08:28:17+05:30	81.04	NZD	mastercard (9397)	Approved	Purchase
+2025-09-01T09:45:26+05:30	67.87	NZD	visa (2577)	Approved	Purchase
+         */
+        // Verify only headers and one row of transaction data are present in the CSV file
+        const csvLines = csvContent.split('\n');
+        expect.soft(csvLines.length).toBe(2);
+        const transactionData = csvLines[1].split(',');
+
+        const transactionHeaders = csvLines[0].split(',');
+        await test.step('Verify CSV headers are correct', async () => {
+          expect.soft(transactionHeaders[0]?.trim()).toBe('Date/Time');
+          expect.soft(transactionHeaders[1]?.trim()).toBe('Amount');
+          expect.soft(transactionHeaders[2]?.trim()).toBe('Currency');
+          expect.soft(transactionHeaders[3]?.trim()).toBe('Card type');
+          expect.soft(transactionHeaders[4]?.trim()).toBe('Payment status');
+          expect.soft(transactionHeaders[5]?.trim()).toBe('Transaction type');
+        });
+
+        //Nov 24, 2025T8:29 AM should match with 2025-11-24T08:29:58+05:30 in CSV, so we need to convert firstResultDate and firstResultTime to the same format as CSV date time for comparison
+        //const expectedDateTime = `${firstResultDate?.trim()}T${firstResultTime?.trim()}`;
+        
+        const actualDateTime = transactionData[0]?.trim();
+        
+        const date = new Date(actualDateTime || '');
+
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const day = date.getDate();
+        const year = date.getFullYear();
+
+        const time = date.toLocaleString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        const actualDateTime_converted = `${month} ${day}, ${year}T${time}`;
+
+        let expectedDateTime = `${firstResultDate?.trim()}T${firstResultTime?.trim()}`;
+
+        await test.step(`Verify transaction date time in CSV matches with first transaction date time ${expectedDateTime}`, async () => {
+          await test.info().attach('Expected Transaction DateTime', {
+            body: expectedDateTime || '',
+            contentType: 'text/plain',
+          });
+          await test.info().attach('Actual Transaction DateTime', {
+            body: actualDateTime || '',
+            contentType: 'text/plain',
+          });
+          expect.soft(actualDateTime_converted).toBe(expectedDateTime);
+        });
+
+        const expectedAmount = firstResultAmount?.trim().replace('$', '').replace(',', '') || '';
+        const actualAmount = transactionData[1]?.trim();
+        await test.step(`Verify transaction amount in CSV matches with first transaction amount ${expectedAmount}`, async () => {
+          await test.info().attach('Expected Transaction Amount', {
+            body: expectedAmount || '',
+            contentType: 'text/plain',
+          });
+          await test.info().attach('Actual Transaction Amount', {
+            body: actualAmount || '',
+            contentType: 'text/plain',
+          });
+          expect.soft(actualAmount).toBe(expectedAmount);
+        });
+
+        const expectedCardType = firstResultCardType?.trim();
+        const actualCardType = transactionData[3]?.trim();
+        await test.step(`Verify card type in CSV matches with first transaction card type ${expectedCardType}`, async () => {
+          await test.info().attach('Expected Card Type', {
+            body: expectedCardType || '',
+            contentType: 'text/plain',
+          });
+          await test.info().attach('Actual Card Type', {
+            body: actualCardType || '',
+            contentType: 'text/plain',
+          });
+          expect.soft(actualCardType).toBe(expectedCardType);
+        });
+
+        const expectedPaymentStatus = firstResultPaymentStatus?.trim();
+        const actualPaymentStatus = transactionData[4]?.trim();
+        await test.step(`Verify payment status in CSV matches with first transaction payment status ${expectedPaymentStatus}`, async () => {
+          await test.info().attach('Expected Payment Status', {
+            body: expectedPaymentStatus || '',
+            contentType: 'text/plain',
+          });
+          await test.info().attach('Actual Payment Status', {
+            body: actualPaymentStatus || '',
+            contentType: 'text/plain',
+          });
+          expect.soft(actualPaymentStatus).toBe(expectedPaymentStatus);
+        });
+
+      });
+    });
   });
 });
