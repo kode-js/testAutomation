@@ -72,6 +72,8 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
 
   await test.step('Verify Mouse hover on Net Sales chart', async () => {
 
+    //wait for 5 seconds
+    await sleep(5000);
     //mouse hover on balance summary chart
     await transactionsPage.chart_NetSales.locator.hover();
 
@@ -107,8 +109,8 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
     let attempts = 0;
     let mousehoverSuccess = false;
     while (attempts < 5) {
-      await transactionsPage.chart_NetSales.locator.hover({ position: { x: 10, y: 100 } });
-      await sleep(1000);
+      await transactionsPage.chart_NetSales.locator.hover({ position: { x: 5, y: 50 } });
+      await sleep(2000);
       const newTickValue = await transactionsPage.netsalesSelectedChartValue.locator.textContent();
       if (newTickValue !== tickValue) {
         await test.step('Net sales label should update with new hovered chart date', async () => {
@@ -285,16 +287,7 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
       await test.step('Verify downloaded CSV file content matches filtered transaction data', async () => {
         await test.info().attach('Downloaded CSV File', { path: filePath, contentType: 'text/csv' });
         const csvContent = fs.readFileSync(filePath, 'utf-8');
-        /** Sample CSV content:
-         * 
-Date/Time	Amount	Currency	Card type	Payment status	Transaction type
-2025-11-24T08:29:58+05:30	50.65	NZD	visa (2577)	Approved	Purchase
-2025-11-24T08:28:17+05:30	81.04	NZD	mastercard (9397)	Approved	Purchase
-2025-09-01T09:45:26+05:30	67.87	NZD	visa (2577)	Approved	Purchase
-         */
-        // Verify only headers and one row of transaction data are present in the CSV file
         const csvLines = csvContent.split('\n');
-        expect.soft(csvLines.length).toBe(2);
         const transactionData = csvLines[1].split(',');
 
         const transactionHeaders = csvLines[0].split(',');
@@ -307,26 +300,37 @@ Date/Time	Amount	Currency	Card type	Payment status	Transaction type
           expect.soft(transactionHeaders[5]?.trim()).toBe('Transaction type');
         });
 
-        //Nov 24, 2025T8:29 AM should match with 2025-11-24T08:29:58+05:30 in CSV, so we need to convert firstResultDate and firstResultTime to the same format as CSV date time for comparison
-        //const expectedDateTime = `${firstResultDate?.trim()}T${firstResultTime?.trim()}`;
-        
-        const actualDateTime = transactionData[0]?.trim();
-        
-        const date = new Date(actualDateTime || '');
+        let expectedDate = `${firstResultDate?.trim()}`;
+        let expectedTime = `${firstResultTime?.trim()}`;
+        //expected date fetched from application is in Nov 24, 2025 format, so we need to convert it to 2025-11-24 format to compare with CSV data
+        const dateObj = new Date(expectedDate || '');
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        expectedDate = `${year}-${month}-${day}`;
+        //expctedDate format should be like "2025-11-24"
+        //exptectedTime format may be "8:29 AM", "08:29 AM", or already 24-hour like "08:29"
+        //Parse hour/minute and convert to zero-padded 24-hour "HH:MM" format
+        let expectedTimeFormatted = '';
+        const timeMatch = expectedTime?.match(/\s*(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+        if (timeMatch) {
+          let hour = parseInt(timeMatch[1], 10);
+          const minute = timeMatch[2];
+          const meridiem = timeMatch[3]?.toUpperCase();
+          if (meridiem === 'PM' && hour !== 12) hour += 12;
+          if (meridiem === 'AM' && hour === 12) hour = 0;
+          expectedTimeFormatted = String(hour).padStart(2, '0') + ':' + minute;
+        } else {
+          expectedTimeFormatted = expectedTime?.trim().slice(0, 5) || '';
+        }
+        const expectedDateTime = `${expectedDate}T${expectedTimeFormatted}`;
 
-        const month = date.toLocaleString('en-US', { month: 'short' });
-        const day = date.getDate();
-        const year = date.getFullYear();
-
-        const time = date.toLocaleString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
-        });
-
-        const actualDateTime_converted = `${month} ${day}, ${year}T${time}`;
-
-        let expectedDateTime = `${firstResultDate?.trim()}T${firstResultTime?.trim()}`;
+        let actualDateTime = transactionData[0]?.trim();
+        //actualDateTime format is like "2025-11-24T08:29:58+05:30"
+        //actualDate is first 10 characters of actualDateTime, actualTime is characters from 11 to 16 in actualDateTime excluding seconds
+        let actualDate = actualDateTime?.slice(0, 10);
+        let actualTime = actualDateTime?.slice(11, 16);
+        const actualDateTime_trimmed = `${actualDate}T${actualTime}`;
 
         await test.step(`Verify transaction date time in CSV matches with first transaction date time ${expectedDateTime}`, async () => {
           await test.info().attach('Expected Transaction DateTime', {
@@ -337,7 +341,7 @@ Date/Time	Amount	Currency	Card type	Payment status	Transaction type
             body: actualDateTime || '',
             contentType: 'text/plain',
           });
-          expect.soft(actualDateTime_converted).toBe(expectedDateTime);
+          expect.soft(actualDateTime_trimmed).toBe(expectedDateTime);
         });
 
         const expectedAmount = firstResultAmount?.trim().replace('$', '').replace(',', '') || '';

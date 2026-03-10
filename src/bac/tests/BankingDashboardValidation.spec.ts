@@ -102,7 +102,7 @@ test('Banking Dashboard Validation', async ({ page }) => {
   let attempts = 0;
   let mousehoverSuccess = false;
   while (attempts < 5) {
-    await homePage.balanceSummaryChart.locator.hover({ position: { x: 10, y: 100 } });
+    await homePage.balanceSummaryChart.locator.hover({ position: { x: 5, y: 50 } });
     await sleep(1000);
     const newTickValue = await homePage.chartSelectedValue.locator.textContent();
     if (newTickValue !== tickValue) {
