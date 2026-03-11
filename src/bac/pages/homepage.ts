@@ -37,6 +37,8 @@ export class HomePage {
     readonly closingBalanceLabel: UiElement;
     readonly chartSelectedValue: UiElement;
     readonly chartContainer: UiElement;
+    readonly totalCashInLable: UiElement;
+    readonly totalCashOutLabel: UiElement;
 
     readonly topOutboundCashDestinationsCheck: UiElement;
     readonly topOutboundCashDestinationsFirstTick: UiElement;
@@ -68,6 +70,8 @@ export class HomePage {
         this.boardQuickViewSection = UiElement.of(page.locator('div.board__quick-view'), 'Board quick view section');
         this.balanceSummaryChart = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']"), 'Balance summary chart');
         this.closingBalanceLabel = UiElement.of(page.locator("xpath=//div[contains(text(),'Closing balance as of')]"), 'Closing balance label');
+        this.totalCashInLable = UiElement.of(page.locator("xpath=//div[contains(text(),'Total cash in')]"), 'Total cash in label');
+        this.totalCashOutLabel = UiElement.of(page.locator("xpath=//div[contains(text(),'Total cash out')]"), 'Total cash out label');
         this.chartSelectedValue = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']//*[@class='tick-value selected']"), 'Chart selected value');
         this.chartContainer = UiElement.of(page.locator("xpath=//div[@id='banking-balance-summary-new']//div[@id='area-chart-container-0banking']"), 'Chart container');
         this.datePickerInput = UiElement.of(page.locator("xpath=//input[@id='date']"), 'Date picker input');

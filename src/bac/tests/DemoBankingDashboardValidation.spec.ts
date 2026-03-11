@@ -21,6 +21,91 @@ test('Banking Dashboard Validation', async ({ page }) => {
     await expect.soft(page).toHaveTitle(login.boa_demo.homepageTitle);
   });
 
+
+    await test.step('Quickview tiles are visible', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toBeVisible();
+      await expect.soft(homePage.cashTrendTile.locator).toBeVisible();
+      await expect.soft(homePage.moneyInTile.locator).toBeVisible();
+      await expect.soft(homePage.moneyOutTile.locator).toBeVisible();
+    });
+  
+    await test.step('Dashboard tiles are visible', async () => {
+      await expect.soft(homePage.balanceSummaryTile.locator).toBeVisible({ timeout: 120000 });
+      await expect.soft(homePage.transactionSummaryTile.locator).toBeVisible({ timeout: 120000 });
+      await expect.soft(homePage.availableBalancesTile.locator).toBeVisible({ timeout: 120000 });
+      await expect.soft(homePage.topInboundCashSourcesTile.locator).toBeVisible({ timeout: 120000 });
+      await expect.soft(homePage.topOutboundCashSourcesTile.locator).toBeVisible({ timeout: 120000 });
+    });
+  
+  
+    await test.step('Quickview tiles do not contain load error text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.cashTrendTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.moneyInTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.moneyOutTile.locator).not.toContainText('Cannot load the data');
+    });
+  
+    await test.step('Dashboard tiles do not contain load error text', async () => {
+      await expect.soft(homePage.balanceSummaryTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.transactionSummaryTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.availableBalancesTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.topInboundCashSourcesTile.locator).not.toContainText('Cannot load the data');
+      await expect.soft(homePage.topOutboundCashSourcesTile.locator).not.toContainText('Cannot load the data');
+      await test.info().attach(`screenshot- Tiles`, {
+        body: await page.screenshot(),
+        contentType: 'image/png',
+      });
+    });
+  
+  
+  
+    await actions.clickElement(homePage.dailyButton);
+    await page.waitForLoadState('networkidle');
+    await test.step('Daily view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('Since yesterday');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('Since yesterday');
+  
+      //screenshot boardroom quick view section
+      await test.info().attach(`screenshot- Daily View`, {
+        body: await homePage.boardQuickViewSection.locator.screenshot(),
+        contentType: 'image/png',
+      });
+    });
+  
+  
+    await actions.clickElement(homePage.weeklyButton);
+    await page.waitForLoadState('networkidle');
+    await test.step('Weekly view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('From last week');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('From last week');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('From last week');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('From last week');
+  
+      await test.info().attach(`screenshot- Weekly View`, {
+        body: await homePage.boardQuickViewSection.locator.screenshot(),
+        contentType: 'image/png',
+      });
+  
+    });
+  
+  
+    await actions.clickElement(homePage.monthlyButton);
+    await page.waitForLoadState('networkidle');
+    await test.step('Monthly view shows expected text', async () => {
+      await expect.soft(homePage.closingCashBalanceTile.locator).toContainText('From last month');
+      await expect.soft(homePage.cashTrendTile.locator).toContainText('From last month');
+      await expect.soft(homePage.moneyInTile.locator).toContainText('From last month');
+      await expect.soft(homePage.moneyOutTile.locator).toContainText('From last month');
+  
+      await test.info().attach(`screenshot- Monthly View`, {
+        body: await homePage.boardQuickViewSection.locator.screenshot(),
+        contentType: 'image/png',
+      });
+    });
+  
+
   //mouse hover on balance summary chart
   await homePage.balanceSummaryChart.locator.hover();
 
@@ -39,11 +124,26 @@ test('Banking Dashboard Validation', async ({ page }) => {
   console.log('Closing Balance Text: ', closingBalanceText);
   const currentBalanceDate = closingBalanceText?.replace('Closing balance as of ', '').trim();
 
+  //get the text of total cash in label from transaction summary tile
+  const totalCashInText = await homePage.totalCashInLable.locator.textContent();
+  console.log('Total Cash In Text: ', totalCashInText);
+  const totalCashInDate = totalCashInText?.replace('Total cash in, period ending ', '').trim();
+
+  //get the text of total cash out label from transaction summary tile
+  const totalCashOutText = await homePage.totalCashOutLabel.locator.textContent();
+  console.log('Total Cash Out Text: ', totalCashOutText);
+  const totalCashOutDate = totalCashOutText?.replace('Total cash out, period ending ', '').trim();
+
   //verify that current balance date is equal to chart selected value text chartSelectedValue
   const tickValue = await homePage.chartSelectedValue.locator.textContent();
 
   await test.step('Chart selected value equals closing balance date', async () => {
     expect.soft(tickValue).toBe(currentBalanceDate);
+  });
+
+  await test.step('Total cash in and out dates equal closing balance date', async () => {
+    expect.soft(totalCashInDate).toBe(currentBalanceDate);
+    expect.soft(totalCashOutDate).toBe(currentBalanceDate);
   });
 
   await test.step('Expect Top Outbound Cash Destinations to be Loaded', async () => {

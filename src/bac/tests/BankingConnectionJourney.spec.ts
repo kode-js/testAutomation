@@ -79,8 +79,8 @@ test('Connection Validation', async ({ page }) => {
   const totalBal = parseFloat((totalBalText as string).replace('$', '').replace(',', ''));
   console.log(`Sum of balances: ${sum}, Total balance: ${totalBal}`);
   await test.step('Sum of account balances matches total balance', async () => {
-    await test.info().attach('expected-totalBalance', { body: Buffer.from(String(totalBal)), contentType: 'text/plain' });
-    await test.info().attach('actual-sum', { body: Buffer.from(String(sum)), contentType: 'text/plain' });
+    await test.info().attach('expected-totalBalance', { body: totalBal.toString(), contentType: 'text/plain' });
+    await test.info().attach('actual-sum', { body: sum.toString(), contentType: 'text/plain' });
     expect.soft(sum).toBeCloseTo(totalBal, 2);
   });
 
