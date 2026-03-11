@@ -63,10 +63,7 @@ test('Connection Validation', async ({ page }) => {
   });
   //loading spinner to be visible and then hidden
   await test.step('Loading spinner appears then hides', async () => {
-    //await test.step('Verify loading spinner visibility then hidden', async () => {
-    // all loading spinners that appear after approving accounts should be hidden before proceedin
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 120000 });
-    //});
   });
 
   //verify total balance is equal to sum of all account balances
@@ -101,9 +98,6 @@ test('Connection Validation', async ({ page }) => {
 
   await test.step('Wait for dashboard tiles to load', async () => {
     await page.waitForTimeout(2000);
-    // await expect.soft(homePage.tileLoadSpiner.locator).toBeHidden({
-    //   timeout: 240_000
-    // });
     await page.waitForSelector(
       "//*[text()='Loading, please wait.']",
       {

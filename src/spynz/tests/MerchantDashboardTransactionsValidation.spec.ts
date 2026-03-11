@@ -9,7 +9,7 @@ import login from '../testdata/login.json' assert { type: 'json' };
 import path from 'path';
 import fs from 'fs';
 
-test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => {
+test('Merchant Dashboard Transactions Tab Validation', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const homepage = new HomePage(page);
   const transactionsPage = new MerchantTransactionsPage(page);
@@ -81,8 +81,6 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
     await sleep(1000);
 
     const tickValue = await transactionsPage.netsalesSelectedChartValue.locator.textContent();
-    //expected_previousYearNetValue should and one year before. tick value format: Feb 23, 2026, so expected_previousYearNetValue should be Feb 23, 2025
-    // yearFromtickValue is last four characters of tick value
     let yearFromTickValue = tickValue?.slice(-4);
     let expectedPreviousYearNetValue = tickValue?.replace(yearFromTickValue || '', (parseInt(yearFromTickValue || '') - 1).toString() || '');
 
@@ -137,7 +135,6 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
   });
 
   await test.step('Verify Transaction filters and export functionality', async () => {
-    // compute date range: from = 6 months before today (T00:00), to = today (T00:00)
     const now = new Date();
     const fromDate = new Date(now);
     fromDate.setMonth(fromDate.getMonth() - 6);
@@ -308,9 +305,6 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
         const month = String(dateObj.getMonth() + 1).padStart(2, '0');
         const day = String(dateObj.getDate()).padStart(2, '0');
         expectedDate = `${year}-${month}-${day}`;
-        //expctedDate format should be like "2025-11-24"
-        //exptectedTime format may be "8:29 AM", "08:29 AM", or already 24-hour like "08:29"
-        //Parse hour/minute and convert to zero-padded 24-hour "HH:MM" format
         let expectedTimeFormatted = '';
         const timeMatch = expectedTime?.match(/\s*(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
         if (timeMatch) {
@@ -326,8 +320,6 @@ test.only('Merchant Dashboard Transactions Tab Validation', async ({ page }) => 
         const expectedDateTime = `${expectedDate}T${expectedTimeFormatted}`;
 
         let actualDateTime = transactionData[0]?.trim();
-        //actualDateTime format is like "2025-11-24T08:29:58+05:30"
-        //actualDate is first 10 characters of actualDateTime, actualTime is characters from 11 to 16 in actualDateTime excluding seconds
         let actualDate = actualDateTime?.slice(0, 10);
         let actualTime = actualDateTime?.slice(11, 16);
         const actualDateTime_trimmed = `${actualDate}T${actualTime}`;

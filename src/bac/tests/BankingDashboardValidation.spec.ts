@@ -141,7 +141,6 @@ test('Banking Dashboard Validation', async ({ page }) => {
   //sleep for 2 seconds
   await sleep(2000);
   //loading spinner to be visible and then hidden
-  //await expect.soft(miPage.loadingSpinner).toBeVisible();
   await test.step('Loading spinner hidden after fetching outbound cash destinations', async () => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });

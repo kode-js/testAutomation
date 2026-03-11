@@ -46,16 +46,6 @@ test('Banking Dashboard Validation', async ({ page }) => {
     expect.soft(tickValue).toBe(currentBalanceDate);
   });
 
-  //Navigate to date picker and go to 12 months back and select 10th day
-  // await actions.clickElement(homePage.datePickerInput);
-  // await expect.soft(homePage.datePickerDropdown.locator).toBeVisible();
-  // for (let i = 0; i < 12; i++) {
-  //   await actions.clickElement(homePage.datePickerPreviousMonthButton);
-  //   await sleep(500);
-  // }
-  // await actions.clickElement(homePage.datePickerDay10Cell);
-  // await page.waitForLoadState('networkidle');
-
   await test.step('Expect Top Outbound Cash Destinations to be Loaded', async () => {
     await expect(homePage.topOutboundCashSourcesTile.locator).toBeVisible();
   });
@@ -66,7 +56,6 @@ test('Banking Dashboard Validation', async ({ page }) => {
   //sleep for 2 seconds
   await sleep(2000);
   //loading spinner to be visible and then hidden
-  //await expect.soft(miPage.loadingSpinner).toBeVisible();
   await test.step('Loading spinner hidden after fetching outbound cash destinations', async () => {
     await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
   });
@@ -98,30 +87,10 @@ test('Banking Dashboard Validation', async ({ page }) => {
   await sleep(2000);
   await expect.soft(miPage.loadingSpinner.locator).toBeHidden({ timeout: 30000 });
 
-  // const checkTotalText = await cashDestCanvas.checkTotal.locator.textContent();
-  // console.log('Check Total Text: ', checkTotalText);
-  // const totalAmount = parseFloat(checkTotalText?.replace('$', '').replace(',', '') || '0');
-
   const firstTickTotalText = await cashDestCanvas.getTotalFor(firstTickText).locator.textContent();
   console.log('First Tick Total Text: ', firstTickTotalText);
   const totalAmount = parseFloat(firstTickTotalText?.replace('$', '').replace(',', '') || '0');
 
-  //get all sub transaction amounts and sum them up
-
-  // const subTransactionAmounts = await cashDestCanvas.checkSubTransactions.locator.allTextContents();
-  // let subTotal = 0;
-  // for (const amountText of subTransactionAmounts) {
-  //   const amount = parseFloat(amountText.replace('$', '').replace(',', ''));
-  //   subTotal += amount;
-  // }
-  // console.log('Sum of Sub Transactions: ', subTotal);
-  // await test.step('Sum of sub transactions equals total amount', async () => {
-  //   await expect.soft(subTotal).toBeCloseTo(totalAmount, 2);
-  // });
-
-  //Get the count of sub transactions
-  //Scroll the sub transactions canvas and wait for 2 seconds
-  //Verify if count of sub transactions increased repeat until all sub transactions are loaded
   let previousCount = 0;
   let currentCount = 0;
   const subTransactionsCanvas = cashDestCanvas.getScrollableCanvasFor(firstTickText);
